@@ -53,7 +53,16 @@ int main(int argc, char const *argv[])
 		pokebola(5);
 		int x,y;
 		getmaxyx(stdscr,x,y);
+		attron(COLOR_PAIR(8));
+		mvprintw(22,(y/2)-10,"Juego nuevo (ENTER)");
+		mvprintw(26,(y/2)-10,"Instrucciones (I)");
+		mvprintw(30,(y/2)-10,"Salir (ESC)");
+		attroff(COLOR_PAIR(8));
 		enter=getch();
+		Pokemon player;
+		/*Fire player;
+		Water player;
+		Thunder player;*/
 		if(enter==10){
 			vector<Pokemon*> pokemons=generar_pokemons();
 			attron(COLOR_PAIR(2));
@@ -61,7 +70,6 @@ int main(int argc, char const *argv[])
 			attroff(COLOR_PAIR(2));
 			pokebola(5);
 			int revision=1;
-			Pokemon player;
 			while(revision==1){
 				attron(COLOR_PAIR(8));
 				mvprintw(20,(y/2)-20,"Que pokemon desea elegir como su combatiente?                                            ");
@@ -75,8 +83,25 @@ int main(int argc, char const *argv[])
 					mvprintw(26+(i)*5,(y/2)-8,"-Velocidad:%d",pokemons[i]->getVelocidad());
 				}
 				int elegido=getch();
-				if((elegido-48)<pokemons.size()&&(elegido-48)>=0){
-					player=Pokemon(pokemons[elegido-48]);
+				vector <Move*> movesVacio;
+				if((elegido-48)==0){
+					player=new Fire("Charmander",50,17,10,80,movesVacio);
+					pokemons.erase(pokemons.begin()+(elegido-48));
+					mvprintw(0,(y/2)-20,"(presione cualquier tecla para continuar)");
+					mvprintw(20,(y/2)-20,"Usted a elegido a %s como su Pokemon                                                              ",player.getNombre().c_str());	
+					mvprintw(21,(y/2)-26,"                                                                                  ");
+					revision=0;
+					avanzar=getch();
+				}else if((elegido-48)==1){
+					player=new Thunder("Pikachu",50,15,11,90,movesVacio);
+					pokemons.erase(pokemons.begin()+(elegido-48));
+					mvprintw(0,(y/2)-20,"(presione cualquier tecla para continuar)");
+					mvprintw(20,(y/2)-20,"Usted a elegido a %s como su Pokemon                                                              ",player.getNombre().c_str());	
+					mvprintw(21,(y/2)-26,"                                                                                  ");
+					revision=0;
+					avanzar=getch();
+				}else if ((elegido-48)==2){
+					player=new Water("Squirtle",50,16,12,85,movesVacio);
 					pokemons.erase(pokemons.begin()+(elegido-48));
 					mvprintw(0,(y/2)-20,"(presione cualquier tecla para continuar)");
 					mvprintw(20,(y/2)-20,"Usted a elegido a %s como su Pokemon                                                              ",player.getNombre().c_str());	
@@ -90,7 +115,7 @@ int main(int argc, char const *argv[])
 				}
 				attroff(COLOR_PAIR(8));
 			}
-			vector<Move*> moves=generar_moves(player);
+			vector<Move*> moves = generar_moves(player);
 			vector<Move*> playerMoves;
 			attron(COLOR_PAIR(2));
 			limpiar();
@@ -100,19 +125,18 @@ int main(int argc, char const *argv[])
 			mvprintw(0,(y/2)-20,"(presione cualquier tecla para continuar)");
 			mvprintw(20,(y/2)-20,"ahora se le mostrara la lista de movimientos que podra elegir,solo podra elegir 4");
 			avanzar=getch();
-			attroff(COLOR_PAIR(8));	
+			attroff(COLOR_PAIR(8));
 			while(revision==0){
 				attron(COLOR_PAIR(2));
 				limpiar();
 				attroff(COLOR_PAIR(2));
 				pokebola(5);
 				attron(COLOR_PAIR(8));
-				mvprintw(0,(y/2)-20,"(presione cualquier tecla para continuar)");
-				for (int i = 0; i < moves.size(); ++i)
-				{	
-					mvprintw(22+(i)*3,(y/2)-26,"%d-%s",i,moves[i]->toString().c_str());
-					mvprintw(23+(i)*3,(y/2)-26,"   Precision:%d  Usos:%d",moves[i]->getPrecision(),moves[i]->getUsos());
-					mvprintw(24+(i)*3,(y/2)-26,"Descripcion: %s",moves[i]->getDescripcion().c_str());
+				mvprintw(0,(y/2)-20,"(presione cualquier tecla para continuar)%d",moves.size());
+				for (int i = 0; i < moves.size(); ++i) {
+					mvprintw(22+(i)*3,(y/2)-26,"%d-%s",i,moves.at(i)->toString().c_str());
+					//mvprintw(23+(i)*3,(y/2)-26,"   Precision:%d  Usos:%d",moves.at(i)->getPrecision(),moves[i]->getUsos());
+					//mvprintw(24+(i)*3,(y/2)-26,"Descripcion: %s",moves.at(i)->getDescripcion().c_str());
 				}
 				mvprintw(20,(y/2)-20,"Que movimiento desea elegir para que su pokemon lo aprenda?");
 				mvprintw(21,(y/2)-26,"(presione la tecla del numero del movimiento que desea elegir de la lista)");
@@ -141,15 +165,13 @@ int main(int argc, char const *argv[])
 			oponente.setMoves(oponent_moves(oponente));
 			Combate(player,oponente);
 			refresh();
-		}else if (enter==98)
-		{
+		}else if (enter==98){
 			attron(COLOR_PAIR(2));
 			limpiar();
 			attroff(COLOR_PAIR(2));
 			pokebola(5);
 			attron(COLOR_PAIR(8));
 			mvprintw(0,(y/2)-25,"BIENVENIDO ENTRENADOR AL COMBATE POKEMON");
-			//mvprintw(1,(y/2)-30,"Registro de victorias: Charmeleon:%d   Frogadier:%d    Grovyle:%d",cargar(1),cargar(2),cargar(3));
 			mvprintw(21,(y/2)-8,"Instrucciones");
 			mvprintw(22,(y/2)-26,"-antes de iniciar el combate tendra que elegir 1 pokemon de los tres posibles");
 			mvprintw(23,(y/2)-26,"-usted elegira los ataques de su pokemon");
@@ -174,20 +196,21 @@ int main(int argc, char const *argv[])
 	return 0;
 }
 
-void cuadrosDeBatalla(Pokemon jugador,vector<Move*> ataques){
+void cuadrosDeBatalla(Pokemon jugador1,Pokemon jugador2,vector<Move*> ataques){
 	int y , x;
 	getmaxyx (stdscr,y,x);
-	const int vida = jugador.getVida();
-	mvprintw(21,(y/2)-16,jugador.getNombre()"    %d/%d",jugador.getVida(),vida);
+	const int vida1 = jugador1.getVida();
+	const int vida2 = jugador2.getVida();
+	mvprintw(21,(y/2)-16,"%s                     %d/%d                     %s                     %d/%d",jugador1.getNombre(),jugador1.getVida(),vida1,jugador2.getNombre(),jugador2.getVida(),vida2);
 	mvprintw(22,(y/2)-16," ⛚________________________________⛚                      ⛚________________________________⛚");
 	mvprintw(23,(y/2)-16,"  |  __________	    __________  |                        |  __________	     __________  |");
 	mvprintw(24,(y/2)-16,"  | |          |     |          | |                        | |          |     |          | |");
-	mvprintw(25,(y/2)-16,"  | |    	     |	   |          | |                        | |          |	    |          | |");
+	mvprintw(25,(y/2)-16,"  | |%s|	   |%s| |                        | |%s|	    |%s| |",jugador1.getMoves().at(0)->getNombre(),jugador1.getMoves().at(1)->getNombre(),jugador2.getMoves().at(0)->getNombre(),jugador2.getMoves().at(1)->getNombre());
 	mvprintw(26,(y/2)-16,"  | |          |     |          | |                        | |          |     |          | |");
 	mvprintw(27,(y/2)-16,"  |  ‾‾‾‾‾‾‾‾‾‾       ‾‾‾‾‾‾‾‾‾‾  |                        |  ‾‾‾‾‾‾‾‾‾‾       ‾‾‾‾‾‾‾‾‾‾  |");
 	mvprintw(28,(y/2)-16,"  |  __________       __________  |                        |  __________       __________  |");
 	mvprintw(29,(y/2)-16,"  | |          |     |          | |                        | |          |     |          | |");
-	mvprintw(30,(y/2)-16,"  | |    	     |	   |          | |                        | |          |     |          | |");
+	mvprintw(30,(y/2)-16,"  | |%s|	   |%s| |                        | |%s|	    |%s| |",jugador1.getMoves().at(2)->getNombre(),jugador1.getMoves().at(3)->getNombre(),jugador2.getMoves().at(2)->getNombre(),jugador2.getMoves().at(3)->getNombre());
 	mvprintw(31,(y/2)-16,"  | |          |     |          | |                        | |          |     |          | |");
 	mvprintw(32,(y/2)-16,"  |  ‾‾‾‾‾‾‾‾‾‾       ‾‾‾‾‾‾‾‾‾‾  |                        |  ‾‾‾‾‾‾‾‾‾‾       ‾‾‾‾‾‾‾‾‾‾  |");
 	mvprintw(33,(y/2)-16," ⛚‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾⛚                      ⛚‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾⛚");
