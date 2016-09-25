@@ -6,8 +6,7 @@ using std::vector;
 #include <string>
 using std::string;
 
-class Fire:public Pokemon
-{
+class Fire: public Pokemon{
 private:
 	Move* especial;
 public:
