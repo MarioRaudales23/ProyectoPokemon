@@ -11,7 +11,7 @@ class Fire:public Pokemon
 private:
 	Move* especial;
 public:
-	Fire(string,string,int,int,int,int,vector<Move*>);
+	Fire(string,int,int,int,int,vector<Move*>);
 	~Fire();
 	Move* getSpecialM();
 };

@@ -285,7 +285,7 @@ void vida(Pokemon player,Pokemon cpu){
 	}
 	attroff(COLOR_PAIR(9));
 }
-/*void Combate(Pokemon player,Pokemon cpu){
+void Combate(Pokemon player,Pokemon cpu){
 	int avanzar;
 	int control=0;
 	int x,y;
@@ -360,403 +360,63 @@ void vida(Pokemon player,Pokemon cpu){
 		}else{
 			tiene2=true;
 		}
-		if(player.getMoves()[elegido]->getNombre()=="Protec"||cpu.getMoves()[elegido2]->getNombre()=="Protec"){
-			attron(COLOR_PAIR(8));
-			if (player.getMoves()[elegido]->getNombre()=="Protec"){
-				mvprintw(20,(y/2)-30,"%s ha usado %s                                                      ",player.getNombre().c_str(),player.getMoves()[elegido]->getNombre().c_str());
-				avanzar=getch();
-				if((rand()%100)<=player.getMoves()[elegido]->getPrecision()){
-					mvprintw(20,(y/2)-30,"%s ha usado %s                                                      ",cpu.getNombre().c_str(),cpu.getMoves()[elegido2]->getNombre().c_str());
-					avanzar=getch();
-					if (cpu.getMoves()[elegido2]->getNombre()=="Protec")
-					{
-						mvprintw(20,(y/2)-30,"al usar los dos protec nadie se ve afectado,el Combate puede continuar");
-						avanzar=getch();
-					}else if (cpu.getMoves()[elegido2]->getNombre()=="Recover")
-					{
-						if((rand()%100)<=cpu.getMoves()[elegido2]->getPrecision()){
-							if(cpu.getVida()!=50){
-								attron(COLOR_PAIR(8));
-								mvprintw(20,(y/2)-30,"el oponente recupera parte de vida                                                          ");
-								attroff(COLOR_PAIR(8));
-							}else{
-								attron(COLOR_PAIR(8));
-								mvprintw(20,(y/2)-30,"Pero fallo                                                           ");
-								attroff(COLOR_PAIR(8));
-							}
-							cpu.setVida(cpu.getMoves()[elegido2]->efecto(cpu.getVida(),0,0,0,0));
-							vida(player,cpu);
-							avanzar=getch();
-						}else{
-							attron(COLOR_PAIR(8));
-							mvprintw(20,(y/2)-30,"Pero fallo                                                           ");
-							attroff(COLOR_PAIR(8));
-							avanzar=getch();
-						}
-					}else{
-						attron(COLOR_PAIR(8));
-						mvprintw(20,(y/2)-30,"Pero es detenido por tu Protec                                                              ");
-						attroff(COLOR_PAIR(8));
-						avanzar=getch();
-					}
-				}else{
-					mvprintw(20,(y/2)-30,"Pero fallo                                                      ");
-					avanzar=getch();
-					mvprintw(20,(y/2)-30,"%s ha usado %s                                                      ",cpu.getNombre().c_str(),cpu.getMoves()[elegido2]->getNombre().c_str());
-					avanzar=getch();
-					if (cpu.getMoves()[elegido2]->getNombre()=="Protec")
-					{
-						attron(COLOR_PAIR(8));
-						mvprintw(20,(y/2)-30,"El oponente se protege pero al no ser atacado por ti nadie se ve afectado");
-						attroff(COLOR_PAIR(8));
-						avanzar=getch();
-					}else if (cpu.getMoves()[elegido2]->getNombre()=="Recover")
-					{
-						if((rand()%100)<=cpu.getMoves()[elegido2]->getPrecision()){
-							if(cpu.getVida()!=50){
-								attron(COLOR_PAIR(8));
-								mvprintw(20,(y/2)-30,"el oponente recupera parte de vida                                                          ");
-								attroff(COLOR_PAIR(8));
-							}else{
-								attron(COLOR_PAIR(8));
-								mvprintw(20,(y/2)-30,"Pero fallo                                                           ");
-								attroff(COLOR_PAIR(8));
-							}  
-							cpu.setVida(cpu.getMoves()[elegido2]->efecto(cpu.getVida(),0,0,0,0));
-							vida(player,cpu);
-							avanzar=getch();
-						}else{
-							attron(COLOR_PAIR(8));
-							mvprintw(20,(y/2)-30,"Pero fallo                                                           ");
-							attroff(COLOR_PAIR(8));
-							avanzar=getch();
-						}
-					}else{
-						if((rand()%100)<=cpu.getMoves()[elegido2]->getPrecision()){
-							int debil=efectividad(player.getTipo(),cpu.getMoves()[elegido2]->getTipo());
-							player.setVida(cpu.getMoves()[elegido2]->efecto(0,cpu.getAtaque(),player.getVida(),player.getDefensa(),debil));
-						}else{
-							mvprintw(20,(y/2)-30,"Pero fallo                                                           ");
-						}
-						vida(player,cpu);
-						avanzar=getch();
-					}
-				}
+		
+		if (player.getVelocidad()>cpu.getVelocidad())
+		{
+			mvprintw(20,(y/2)-30,"%s ha usado %s                                                      ",player.getNombre().c_str(),player.getMoves()[elegido]->getNombre().c_str());
+			avanzar=getch();
+			if((rand()%100)<=player.getMoves()[elegido]->getPrecision()){
+				string tipopoke = typeid(cpu).name();
+				int debil=efectividad(tipopoke,player.getMoves()[elegido]->getTipo());
+				cpu.setVida(player.getMoves()[elegido]->efecto(0,player.getAtaque(),cpu.getVida(),cpu.getDefensa(),debil));
 			}else{
-				mvprintw(20,(y/2)-30,"%s ha usado %s                                                      ",cpu.getNombre().c_str(),cpu.getMoves()[elegido2]->getNombre().c_str());
-				avanzar=getch();
-				if((rand()%100)<=cpu.getMoves()[elegido2]->getPrecision()){
-					mvprintw(20,(y/2)-30,"%s ha usado %s                                                      ",player.getNombre().c_str(),player.getMoves()[elegido]->getNombre().c_str());
-					avanzar=getch();
-					if (player.getMoves()[elegido]->getNombre()=="Protec")
-					{
-						attron(COLOR_PAIR(8));
-						mvprintw(20,(y/2)-30,"al usar los dos protec nadie se ve afectado,el Combate puede continuar");
-						avanzar=getch();
-						attroff(COLOR_PAIR(8));
-					}else if (player.getMoves()[elegido]->getNombre()=="Recover")
-					{
-						if((rand()%100)<=player.getMoves()[elegido]->getPrecision()){
-							if(player.getVida()!=50){
-								attron(COLOR_PAIR(8));
-								mvprintw(20,(y/2)-30,"recuperas parte de vida                                                          ");
-								attroff(COLOR_PAIR(8));
-							}else{
-								attron(COLOR_PAIR(8));
-								mvprintw(20,(y/2)-30,"Pero fallo                                                           ");
-								attroff(COLOR_PAIR(8));
-							}
-							player.setVida(player.getMoves()[elegido]->efecto(player.getVida(),0,0,0,0));
-							vida(player,cpu);
-							avanzar=getch();
-						}else{
-							attron(COLOR_PAIR(8));
-							mvprintw(20,(y/2)-30,"Pero fallo                                                           ");
-							attroff(COLOR_PAIR(8));
-							avanzar=getch();
-						}
-					}else{
-						attron(COLOR_PAIR(8));
-						mvprintw(20,(y/2)-30,"Pero es detenido por su Protec                                                              ");
-						avanzar=getch();
-						attroff(COLOR_PAIR(8));
-					}
-				}else{
-					attron(COLOR_PAIR(8));
-					mvprintw(20,(y/2)-30,"Pero fallo                                                      ");
-					avanzar=getch();
-					mvprintw(20,(y/2)-30,"%s ha usado %s                                                      ",player.getNombre().c_str(),player.getMoves()[elegido]->getNombre().c_str());
-					avanzar=getch();
-					attroff(COLOR_PAIR(8));
-					if (player.getMoves()[elegido]->getNombre()=="Protec")
-					{
-						attron(COLOR_PAIR(8));
-						mvprintw(20,(y/2)-30,"te proteges pero al no ser atacado por el, nadie se ve afectado          ");
-						avanzar=getch();
-						attroff(COLOR_PAIR(8));
-					}else if (player.getMoves()[elegido]->getNombre()=="Recover")
-					{
-						if((rand()%100)<=player.getMoves()[elegido]->getPrecision()){
-							if(player.getVida()!=50){
-								attron(COLOR_PAIR(8));
-								mvprintw(20,(y/2)-30,"recuperas parte de vida                                                          ");
-								attroff(COLOR_PAIR(8));
-							}else{
-								attron(COLOR_PAIR(8));
-								mvprintw(20,(y/2)-30,"Pero fallo                                                           ");
-								attroff(COLOR_PAIR(8));
-							}
-							player.setVida(player.getMoves()[elegido]->efecto(player.getVida(),0,0,0,0));
-							vida(player,cpu);
-							avanzar=getch();
-						}else{
-							attron(COLOR_PAIR(8));
-							mvprintw(20,(y/2)-30,"Pero fallo                                                           ");
-							attroff(COLOR_PAIR(8));
-							avanzar=getch();
-						}
-					}else{
-						if((rand()%100)<=player.getMoves()[elegido]->getPrecision()){
-							int debil=efectividad(cpu.getTipo(),player.getMoves()[elegido]->getTipo());
-							cpu.setVida(player.getMoves()[elegido]->efecto(0,player.getAtaque(),cpu.getVida(),cpu.getDefensa(),debil));
-						}else{
-							attron(COLOR_PAIR(8));
-							mvprintw(20,(y/2)-30,"Pero fallo                                                           ");
-							attroff(COLOR_PAIR(8));
-						}
-						vida(player,cpu);
-						avanzar=getch();
-					}
-				}
+				mvprintw(20,(y/2)-30,"Pero fallo                                                           ");
 			}
-			int control2=0;
-			attroff(COLOR_PAIR(8));
-			if(player.getVida()>0&&cpu.getVida()>0){
-				while(control2==0){
-				attron(COLOR_PAIR(8));
-				mvprintw(20,(y/2)-30,"             Que Desea hacer ahora?                                                ");
-				mvprintw(21,(y/2)-30,"             0-Continuar el Combate");
-				mvprintw(22,(y/2)-30,"             1-Terminar el Combate");
-				avanzar=getch();
-				if((avanzar-48)==0){
-					control2=1;
-				}else if ((avanzar-48)==1)
-				{
-					control2=1;
-					control=3;
-				}
-				attroff(COLOR_PAIR(8));
-				}
-			}	
-		}else if(player.getVelocidad()>cpu.getVelocidad()){
-			attron(COLOR_PAIR(8));
-			if(tiene1==false){
-				mvprintw(20,(y/2)-30,"%s ha usado %s                                                      ",player.getNombre().c_str(),player.getMoves()[elegido]->getNombre().c_str());
-				avanzar=getch();
-				if(player.getMoves()[elegido]->getNombre()=="Recover"){
-					if((rand()%100)<=player.getMoves()[elegido]->getPrecision()){
-						if(player.getVida()!=50){
-								attron(COLOR_PAIR(8));
-								mvprintw(20,(y/2)-30,"recuperas parte de vida                                                          ");
-								attroff(COLOR_PAIR(8));
-						}else{
-								attron(COLOR_PAIR(8));
-								mvprintw(20,(y/2)-30,"Pero fallo                                                           ");
-								attroff(COLOR_PAIR(8));
-						}
-						player.setVida(player.getMoves()[elegido]->efecto(player.getVida(),0,0,0,0));
-						vida(player,cpu);
-						avanzar=getch();
-					}else{
-						attron(COLOR_PAIR(8));
-						mvprintw(20,(y/2)-30,"Pero fallo                                                           ");
-						attroff(COLOR_PAIR(8));
-						avanzar=getch();
-					}
-				}else{
-					if((rand()%100)<=player.getMoves()[elegido]->getPrecision()){
-						int debil=efectividad(cpu.getTipo(),player.getMoves()[elegido]->getTipo());
-						cpu.setVida(player.getMoves()[elegido]->efecto(0,player.getAtaque(),cpu.getVida(),cpu.getDefensa(),debil));
-					}else{
-						mvprintw(20,(y/2)-30,"Pero fallo                                                           ");
-					}
-					vida(player,cpu);
-					avanzar=getch();
-				}
+			vida(player,cpu);
+			avanzar=getch();
+			mvprintw(20,(y/2)-30,"%s ha usado %s                                                      ",cpu.getNombre().c_str(),cpu.getMoves()[elegido2]->getNombre().c_str());
+			avanzar=getch();
+			if((rand()%100)<=cpu.getMoves()[elegido2]->getPrecision()){
+				string tipopoke = typeid(player).name();
+				int debil=efectividad(tipopoke,cpu.getMoves()[elegido2]->getTipo());
+				player.setVida(cpu.getMoves()[elegido2]->efecto(0,cpu.getAtaque(),player.getVida(),player.getDefensa(),debil));
 			}else{
-				mvprintw(20,(y/2)-30,"%s ha usado Struggle                                                      ",player.getNombre().c_str());
-				cpu.setVida(cpu.getVida()-5);
-				player.setVida(player.getVida()-8);
-				vida(player,cpu);
-				avanzar=getch();
+				mvprintw(20,(y/2)-30,"Pero fallo                                                           ");
 			}
-			attroff(COLOR_PAIR(8));
+			vida(player,cpu);
+			avanzar=getch();
 		}else{
-			attron(COLOR_PAIR(8));
-			if(tiene2==false){
-				mvprintw(20,(y/2)-30,"%s ha usado %s                                                      ",cpu.getNombre().c_str(),cpu.getMoves()[elegido2]->getNombre().c_str());
-				avanzar=getch();
-				if(cpu.getMoves()[elegido2]->getNombre()=="Recover"){
-					if((rand()%100)<=cpu.getMoves()[elegido2]->getPrecision()){
-						if(cpu.getVida()!=50){
-								attron(COLOR_PAIR(8));
-								mvprintw(20,(y/2)-30,"el oponente recupera parte de vida                                                          ");
-								attroff(COLOR_PAIR(8));
-						}else{
-								attron(COLOR_PAIR(8));
-								mvprintw(20,(y/2)-30,"Pero fallo                                                           ");
-								attroff(COLOR_PAIR(8));
-						}
-						cpu.setVida(cpu.getMoves()[elegido2]->efecto(cpu.getVida(),0,0,0,0));
-						vida(player,cpu);
-						avanzar=getch();
-					}else{
-						attron(COLOR_PAIR(8));
-						mvprintw(20,(y/2)-30,"Pero fallo                                                           ");
-						attroff(COLOR_PAIR(8));
-						avanzar=getch();
-					}
-				}else{
-					if((rand()%100)<=cpu.getMoves()[elegido2]->getPrecision()){
-						int debil=efectividad(player.getTipo(),cpu.getMoves()[elegido2]->getTipo());
-						player.setVida(cpu.getMoves()[elegido2]->efecto(0,cpu.getAtaque(),player.getVida(),player.getDefensa(),debil));
-					}else{
-						mvprintw(20,(y/2)-30,"Pero fallo                                                           ");
-					}
-					vida(player,cpu);
-					avanzar=getch();
-				}
+			mvprintw(20,(y/2)-30,"%s ha usado %s                                                      ",cpu.getNombre().c_str(),cpu.getMoves()[elegido2]->getNombre().c_str());
+			avanzar=getch();
+			if((rand()%100)<=cpu.getMoves()[elegido2]->getPrecision()){
+				string tipopoke = typeid(player).name();
+				int debil=efectividad(tipopoke,cpu.getMoves()[elegido2]->getTipo());
+				player.setVida(cpu.getMoves()[elegido2]->efecto(0,cpu.getAtaque(),player.getVida(),player.getDefensa(),debil));
 			}else{
-				mvprintw(20,(y/2)-30,"%s ha usado Struggle                                                      ",cpu.getNombre().c_str());
-				player.setVida(player.getVida()-5);
-				cpu.setVida(cpu.getVida()-8);
-				vida(player,cpu);
-				avanzar=getch();
+				mvprintw(20,(y/2)-30,"Pero fallo                                                           ");
 			}
-			attroff(COLOR_PAIR(8));
-		}
-		if(player.getVida()>0&&cpu.getVida()>0&&player.getMoves()[elegido]->getNombre()!="Protec"&&cpu.getMoves()[elegido2]->getNombre()!="Protec"){
-			if(player.getVelocidad()<cpu.getVelocidad()){
-				attron(COLOR_PAIR(8));
-				if(tiene1==false){
-					mvprintw(20,(y/2)-30,"%s ha usado %s                                                      ",player.getNombre().c_str(),player.getMoves()[elegido]->getNombre().c_str());
-					avanzar=getch();
-					if(player.getMoves()[elegido]->getNombre()=="Recover"){
-						if((rand()%100)<=player.getMoves()[elegido]->getPrecision()){
-							if(player.getVida()!=50){
-								attron(COLOR_PAIR(8));
-								mvprintw(20,(y/2)-30,"recuperas parte de vida                                                          ");
-								attroff(COLOR_PAIR(8));
-							}else{
-								attron(COLOR_PAIR(8));
-								mvprintw(20,(y/2)-30,"Pero fallo                                                           ");
-								attroff(COLOR_PAIR(8));
-							}
-							player.setVida(player.getMoves()[elegido]->efecto(player.getVida(),0,0,0,0));
-							vida(player,cpu);
-							avanzar=getch();
-						}else{
-							attron(COLOR_PAIR(8));
-							mvprintw(20,(y/2)-30,"Pero fallo                                                           ");
-							attroff(COLOR_PAIR(8));
-							avanzar=getch();
-						}
-					}else{
-						if((rand()%100)<=player.getMoves()[elegido]->getPrecision()){
-							int debil=efectividad(cpu.getTipo(),player.getMoves()[elegido]->getTipo());
-							cpu.setVida(player.getMoves()[elegido]->efecto(0,player.getAtaque(),cpu.getVida(),cpu.getDefensa(),debil));
-						}else{
-							mvprintw(20,(y/2)-30,"Pero fallo                                                           ");
-						}
-						vida(player,cpu);
-						avanzar=getch();
-					}
-				}else{
-					mvprintw(20,(y/2)-30,"%s ha usado Struggle                                                      ",player.getNombre().c_str());
-					cpu.setVida(cpu.getVida()-5);
-					player.setVida(player.getVida()-8);
-					vida(player,cpu);
-					avanzar=getch();
-				}
-				attroff(COLOR_PAIR(8));
+			vida(player,cpu);
+			avanzar=getch();
+			mvprintw(20,(y/2)-30,"%s ha usado %s                                                      ",player.getNombre().c_str(),player.getMoves()[elegido]->getNombre().c_str());
+			avanzar=getch();
+			if((rand()%100)<=player.getMoves()[elegido]->getPrecision()){
+				string tipopoke = typeid(cpu).name();
+				int debil=efectividad(tipopoke,player.getMoves()[elegido]->getTipo());
+				cpu.setVida(player.getMoves()[elegido]->efecto(0,player.getAtaque(),cpu.getVida(),cpu.getDefensa(),debil));
 			}else{
-				attron(COLOR_PAIR(8));
-				if(tiene2==false){
-					attron(COLOR_PAIR(8));
-					mvprintw(20,(y/2)-30,"%s ha usado %s                                                      ",cpu.getNombre().c_str(),cpu.getMoves()[elegido2]->getNombre().c_str());
-					attroff(COLOR_PAIR(8));
-					avanzar=getch();
-					if(cpu.getMoves()[elegido2]->getNombre()=="Recover"){
-						if((rand()%100)<=cpu.getMoves()[elegido2]->getPrecision()){
-							if(player.getVida()!=50){
-								attron(COLOR_PAIR(8));
-								mvprintw(20,(y/2)-30,"el oponente recupera parte de vida                                                          ");
-								attroff(COLOR_PAIR(8));
-							}else{
-								attron(COLOR_PAIR(8));
-								mvprintw(20,(y/2)-30,"Pero fallo                                                           ");
-								attroff(COLOR_PAIR(8));
-							}
-							cpu.setVida(cpu.getMoves()[elegido2]->efecto(cpu.getVida(),0,0,0,0));
-							vida(player,cpu);
-							avanzar=getch();
-						}else{
-							attron(COLOR_PAIR(8));
-							mvprintw(20,(y/2)-30,"Pero fallo                                                           ");
-							attroff(COLOR_PAIR(8));
-							avanzar=getch();
-						}
-					}else{
-						if((rand()%100)<=cpu.getMoves()[elegido2]->getPrecision()){
-							int debil=efectividad(player.getTipo(),cpu.getMoves()[elegido2]->getTipo());
-							player.setVida(cpu.getMoves()[elegido2]->efecto(0,cpu.getAtaque(),player.getVida(),player.getDefensa(),debil));
-						}else{
-							attron(COLOR_PAIR(8));
-							mvprintw(20,(y/2)-30,"Pero fallo                                                           ");
-							attroff(COLOR_PAIR(8));
-						}
-						vida(player,cpu);
-						avanzar=getch();
-					}
-				}else{
-					attron(COLOR_PAIR(8));
-					mvprintw(20,(y/2)-30,"%s ha usado Struggle                                                      ",cpu.getNombre().c_str());
-					attroff(COLOR_PAIR(8));
-					player.setVida(player.getVida()-5);
-					cpu.setVida(cpu.getVida()-8);
-					vida(player,cpu);
-					avanzar=getch();
-				}
-				attroff(COLOR_PAIR(8));
+				mvprintw(20,(y/2)-30,"Pero fallo                                                           ");
 			}
-			if(player.getVida()<=0){
-				control=2;
-			}else if(cpu.getVida()<=0){
-				control=1;
-			}else{
-				attron(COLOR_PAIR(8));
-				int control2=0;
-				while(control2==0){
-					mvprintw(20,(y/2)-30,"                    Que Desea hacer ahora?                               ");
-					mvprintw(21,(y/2)-30,"                    0-Continuar el Combate");
-					mvprintw(22,(y/2)-30,"                    1-Terminar el Combate");
-					avanzar=getch();
-					if((avanzar-48)==0){
-						control2=1;
-					}else if ((avanzar-48)==1)
-					{
-						control2=1;
-						control=3;
-					}
-				}
-				attroff(COLOR_PAIR(8));
-			}	
-		}else if(player.getVida()<=0){
-			control=2;
-		}else if(cpu.getVida()<=0){
-			control=1;
+			vida(player,cpu);
+			avanzar=getch();
 		}
-		attroff(COLOR_PAIR(8));
+		if (player.getVida()>0&&cpu.getVida()<=0)
+		{
+			control = 1;
+		}else if(player.getVida()<=0&&cpu.getVida()>0){
+			 control = 2;
+		}else{
+			control = 0;
+		}
 	}
 	if(control==1){
 		attron(COLOR_PAIR(2));
@@ -766,13 +426,6 @@ void vida(Pokemon player,Pokemon cpu){
 		attron(COLOR_PAIR(8));
 		mvprintw(0,(y/2)-20,"(presione cualquier tecla para continuar)");
 		mvprintw(1,(y/2)-10,"!FELICIDADES HAS GANADO!");
-		if(player.getNombre()=="Charmeleon"){
-			guardar(1);
-		}else if(player.getNombre()=="Frogadier"){
-			guardar(2);
-		}else{
-			guardar(3);
-		}
 		attroff(COLOR_PAIR(8));
 		avanzar=getch();
 	}else if(control==2){
@@ -783,13 +436,6 @@ void vida(Pokemon player,Pokemon cpu){
 		attron(COLOR_PAIR(8));
 		mvprintw(0,(y/2)-20,"(presione cualquier tecla para continuar)");
 		mvprintw(1,(y/2)-15,"DERROTA,MEJOR SUERTE LA PROXIMA");
-		if(cpu.getNombre()=="Charmeleon"){
-			guardar(1);
-		}else if(cpu.getNombre()=="Frogadier"){
-			guardar(2);
-		}else{
-			guardar(3);
-		}
 		attroff(COLOR_PAIR(8));
 		avanzar=getch();	
 	}else{
@@ -803,7 +449,7 @@ void vida(Pokemon player,Pokemon cpu){
 		attroff(COLOR_PAIR(8));
 		avanzar=getch();			
 	}
-}*/
+}
 vector<Move*> oponent_moves(Pokemon pokemonElegido){
 	vector<Move*> moves;
 	if(typeid(pokemonElegido) == typeid(Fire)){
@@ -820,7 +466,7 @@ vector<Move*> oponent_moves(Pokemon pokemonElegido){
 		moves.push_back(new Ataque("Tail Whip","Electrico",100,8,"ataque que crea una bola de electricidad golpeando con ella al oponente"));
 		moves.push_back(new Ataque("Discharge","Electrico",100,6,"ataque que crea una bola de electricidad golpeando con ella al oponente"));
 		moves.push_back(new Ataque("Thunder Wave","Electrico",100,4,"ataque que crea una bola de electricidad golpeando con ella al oponente"));
-	}else if(typeid(pokemonElegido) == typeid(water)){
+	}else if(typeid(pokemonElegido) == typeid(Water)){
 		moves.push_back(new Ataque("Water pulse","Agua",99,5,"ataque que causa una onda acuatica que golpea al oponente"));
 		moves.push_back(new Ataque("Blizzard","Agua",70,7,"ataque que causa una onda acuatica que golpea al oponente"));
 		moves.push_back(new Ataque("Water gun","Agua",100,6,"ataque que causa una onda acuatica que golpea al oponente"));
@@ -846,7 +492,7 @@ vector<Move*> generar_moves(Pokemon pokemonElegido){
 		moves.push_back(new Ataque("Tail Whip","Electrico",100,8,"ataque que crea una bola de electricidad golpeando con ella al oponente"));
 		moves.push_back(new Ataque("Discharge","Electrico",100,6,"ataque que crea una bola de electricidad golpeando con ella al oponente"));
 		moves.push_back(new Ataque("Thunder Wave","Electrico",100,4,"ataque que crea una bola de electricidad golpeando con ella al oponente"));
-	}else if(typeid(pokemonElegido) == typeid(water)){
+	}else if(typeid(pokemonElegido) == typeid(Water)){
 		moves.push_back(new Ataque("Water pulse","Agua",99,5,"ataque que causa una onda acuatica que golpea al oponente"));
 		moves.push_back(new Ataque("Blizzard","Agua",70,7,"ataque que causa una onda acuatica que golpea al oponente"));
 		moves.push_back(new Ataque("Water gun","Agua",100,6,"ataque que causa una onda acuatica que golpea al oponente"));
@@ -863,7 +509,7 @@ vector<Pokemon*> generar_pokemons(){
 	vector<Move*> moves3;
 	opciones.push_back(new Fire("Charmander",50,17,10,80,moves1));
 	opciones.push_back(new Thunder("Pikachu",50,15,11,90,moves2));
-	opciones.push_back(new water("Squirtle",50,16,12,85,moves3));
+	opciones.push_back(new Water("Squirtle",50,16,12,85,moves3));
 	return opciones;
 }
 void pokebola(int color){

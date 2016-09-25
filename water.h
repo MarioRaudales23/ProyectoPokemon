@@ -10,7 +10,7 @@ class Water:public Pokemon{
 	private:
 		Move* especial;
 	public:
-		Water(string,string,int,int,int,int,vector<Move*>);
+		Water(string,int,int,int,int,vector<Move*>);
 		~Water();
 		Move* getSpecialM();
 };

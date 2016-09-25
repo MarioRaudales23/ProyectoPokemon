@@ -10,7 +10,7 @@ class Thunder:public Pokemon
 private:
 	Move* especial;
 public:
-	Thunder(string,string,int,int,int,int,vector<Move*>);
+	Thunder(string,int,int,int,int,vector<Move*>);
 	~Thunder();
 	Move* getSpecialM();
 };
