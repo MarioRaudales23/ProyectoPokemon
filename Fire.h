@@ -1,11 +1,17 @@
 #pragma once
-#include pokemon.h
+#include "pokemon.h"
+#include "move.h"
+#include <vector>
+using std::vector;
+#include <string>
+using std::string;
 
-class Fire:public pokemon{
-	private:
-		move* especial;
-	public:
-		Fire();
-		~Fire();
-		move* getSpecialM();
-}
+class Fire:public Pokemon
+{
+private:
+	Move* especial;
+public:
+	Fire(string,string,int,int,int,int,vector<Move*>);
+	~Fire();
+	Move* getSpecialM();
+};
