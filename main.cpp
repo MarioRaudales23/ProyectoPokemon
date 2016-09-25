@@ -360,7 +360,6 @@ void Combate(Pokemon player,Pokemon cpu){
 		}else{
 			tiene2=true;
 		}
-		
 		if (player.getVelocidad()>cpu.getVelocidad())
 		{
 			mvprintw(20,(y/2)-30,"%s ha usado %s                                                      ",player.getNombre().c_str(),player.getMoves()[elegido]->getNombre().c_str());
