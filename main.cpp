@@ -1,33 +1,29 @@
 #include <ncurses.h>
 #include "pokemon.h"
 #include "move.h"
+#include "Fire.h"
+#include "Thunder.h"
+#include "water.h"
 #include "ataque.h"
 #include <vector>
 #include <fstream>
 #include <iostream>
 #include <string>
 #include <cstdlib>
+#include <typeinfo>
 #include <ctime>
 #include <cstring>
 #include <stdlib.h>
-using std::fstream;
-using std::string;
-using std::vector;
-using std::ofstream;
-using std::ifstream;
-using std::ios;
-using std::atoi;
+using namespace std;
 char** traspaso(Pokemon);
-int cargar(int);
-void guardar(int);
-int efectividad(string,string);
 void vida(Pokemon,Pokemon);
 void limpiar();
 void pokebola(int);
 void Combate(Pokemon,Pokemon);
+void cuadrosDeBatalla(Pokemon,vector<Move*>);
 vector<Pokemon*> generar_pokemons();
-vector<Move*> generar_moves(string);
-vector<Move*> oponent_moves(string);
+vector<Move*> generar_moves(Pokemon);
+vector<Move*> oponent_moves(Pokemon);
 int main(int argc, char const *argv[])
 {
 	initscr();
@@ -57,21 +53,6 @@ int main(int argc, char const *argv[])
 		pokebola(5);
 		int x,y;
 		getmaxyx(stdscr,x,y);
-		attron(COLOR_PAIR(8));
-		mvprintw(22,(y/2)-16," ⛚________________________________⛚                      ⛚________________________________⛚");
-		mvprintw(23,(y/2)-16,"  |  __________	    __________  |                        |  __________	     __________  |");
-		mvprintw(24,(y/2)-16,"  | |          |     |          | |                        | |          |     |          | |")
-		mvprintw(25,(y/2)-16,"  | |    	     |	   |          | |                        | |          |	    |          | |");
-		mvprintw(26,(y/2)-16,"  | |          |     |          | |                        | |          |     |          | |");
-		mvprintw(27,(y/2)-16,"  |  ‾‾‾‾‾‾‾‾‾‾       ‾‾‾‾‾‾‾‾‾‾  |                        |  ‾‾‾‾‾‾‾‾‾‾       ‾‾‾‾‾‾‾‾‾‾  |");
-		mvprintw(28,(y/2)-16,"  |  __________       __________  |                        |  __________       __________  |");
-		mvprintw(29,(y/2)-16,"  | |          |     |          | |                        | |          |     |          | |");
-		mvprintw(30,(y/2)-16,"  | |    	     |	   |          | |                        | |          |     |          | |");
-		mvprintw(31,(y/2)-16,"  | |          |     |          | |                        | |          |     |          | |");
-		mvprintw(32,(y/2)-16,"  |  ‾‾‾‾‾‾‾‾‾‾       ‾‾‾‾‾‾‾‾‾‾  |                        |  ‾‾‾‾‾‾‾‾‾‾       ‾‾‾‾‾‾‾‾‾‾  |");
-		mvprintw(33,(y/2)-16," ⛚‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾⛚                      ⛚‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾⛚");
-
-		attroff(COLOR_PAIR(8));
 		enter=getch();
 		if(enter==10){
 			vector<Pokemon*> pokemons=generar_pokemons();
@@ -109,7 +90,7 @@ int main(int argc, char const *argv[])
 				}
 				attroff(COLOR_PAIR(8));
 			}
-			vector<Move*> moves=generar_moves(player.getTipo());
+			vector<Move*> moves=generar_moves(player);
 			vector<Move*> playerMoves;
 			attron(COLOR_PAIR(2));
 			limpiar();
@@ -157,7 +138,7 @@ int main(int argc, char const *argv[])
 			player.setMoves(playerMoves);
 			int oponent=rand()%pokemons.size();
 			Pokemon oponente=Pokemon(pokemons[oponent]);
-			oponente.setMoves(oponent_moves(oponente.getTipo()));
+			oponente.setMoves(oponent_moves(oponente));
 			Combate(player,oponente);
 			refresh();
 		}else if (enter==98)
@@ -168,7 +149,7 @@ int main(int argc, char const *argv[])
 			pokebola(5);
 			attron(COLOR_PAIR(8));
 			mvprintw(0,(y/2)-25,"BIENVENIDO ENTRENADOR AL COMBATE POKEMON");
-			mvprintw(1,(y/2)-30,"Registro de victorias: Charmeleon:%d   Frogadier:%d    Grovyle:%d",cargar(1),cargar(2),cargar(3));
+			//mvprintw(1,(y/2)-30,"Registro de victorias: Charmeleon:%d   Frogadier:%d    Grovyle:%d",cargar(1),cargar(2),cargar(3));
 			mvprintw(21,(y/2)-8,"Instrucciones");
 			mvprintw(22,(y/2)-26,"-antes de iniciar el combate tendra que elegir 1 pokemon de los tres posibles");
 			mvprintw(23,(y/2)-26,"-usted elegira los ataques de su pokemon");
@@ -192,59 +173,26 @@ int main(int argc, char const *argv[])
 	endwin();
 	return 0;
 }
-int cargar (int pok){
-	if(pok==1){
-		string line;
-		ifstream mfile ("fuego.txt");
-		if (mfile.is_open())
-		{
-			getline(mfile,line);
-			mfile.close();
-		}
-		return atoi(line.c_str());
-	}else if(pok==2){
-		string line;
-		ifstream mfile ("agua.txt");
-		if (mfile.is_open())
-		{
-			getline(mfile,line);
-			mfile.close();
-		}
-		return atoi(line.c_str());
-	}else{
-		string line;
-		ifstream mfile ("hoja.txt");
-		if (mfile.is_open())
-		{
-			getline(mfile,line);
-			mfile.close();
-		}
-		return atoi(line.c_str());
-	}
-}
-void guardar(int pok){
-	if(pok==1){
-		int x=cargar(pok)+1;
-		ofstream mfile;
-		mfile.open("fuego.txt",std::ios::trunc);
-		mfile << x;
-		mfile.close();
 
-	}else if(pok==2){
-		int x=cargar(pok)+1;
-		ofstream mfile;
-		mfile.open("agua.txt",std::ios::trunc);
-		mfile << x;
-		mfile.close();
-	}else{
-		int x=cargar(pok)+1;
-		ofstream mfile;
-		mfile.open("hoja.txt",std::ios::trunc);
-		mfile << x;
-		mfile.close();
-	}
-
+void cuadrosDeBatalla(Pokemon jugador,vector<Move*> ataques){
+	int y , x;
+	getmaxyx (stdscr,y,x);
+	const int vida = jugador.getVida();
+	mvprintw(21,(y/2)-16,jugador.getNombre()"    %d/%d",jugador.getVida(),vida);
+	mvprintw(22,(y/2)-16," ⛚________________________________⛚                      ⛚________________________________⛚");
+	mvprintw(23,(y/2)-16,"  |  __________	    __________  |                        |  __________	     __________  |");
+	mvprintw(24,(y/2)-16,"  | |          |     |          | |                        | |          |     |          | |");
+	mvprintw(25,(y/2)-16,"  | |    	     |	   |          | |                        | |          |	    |          | |");
+	mvprintw(26,(y/2)-16,"  | |          |     |          | |                        | |          |     |          | |");
+	mvprintw(27,(y/2)-16,"  |  ‾‾‾‾‾‾‾‾‾‾       ‾‾‾‾‾‾‾‾‾‾  |                        |  ‾‾‾‾‾‾‾‾‾‾       ‾‾‾‾‾‾‾‾‾‾  |");
+	mvprintw(28,(y/2)-16,"  |  __________       __________  |                        |  __________       __________  |");
+	mvprintw(29,(y/2)-16,"  | |          |     |          | |                        | |          |     |          | |");
+	mvprintw(30,(y/2)-16,"  | |    	     |	   |          | |                        | |          |     |          | |");
+	mvprintw(31,(y/2)-16,"  | |          |     |          | |                        | |          |     |          | |");
+	mvprintw(32,(y/2)-16,"  |  ‾‾‾‾‾‾‾‾‾‾       ‾‾‾‾‾‾‾‾‾‾  |                        |  ‾‾‾‾‾‾‾‾‾‾       ‾‾‾‾‾‾‾‾‾‾  |");
+	mvprintw(33,(y/2)-16," ⛚‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾⛚                      ⛚‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾⛚");
 }
+
 int efectividad(string pokemon,string move){
 	int x,y;
 	getmaxyx(stdscr,x,y);
@@ -337,8 +285,7 @@ void vida(Pokemon player,Pokemon cpu){
 	}
 	attroff(COLOR_PAIR(9));
 }
-int efectividad(string,string);
-void Combate(Pokemon player,Pokemon cpu){
+/*void Combate(Pokemon player,Pokemon cpu){
 	int avanzar;
 	int control=0;
 	int x,y;
@@ -856,37 +803,57 @@ void Combate(Pokemon player,Pokemon cpu){
 		attroff(COLOR_PAIR(8));
 		avanzar=getch();			
 	}
-}
-vector<Move*> oponent_moves(string tipo){
+}*/
+vector<Move*> oponent_moves(Pokemon pokemonElegido){
 	vector<Move*> moves;
-	if(tipo=="Agua"){
-		moves.push_back(new Ataque("Aerial ace","Volador",100,8,"ataque aereo que nunca falla"));
-		moves.push_back(new Ataque("Water pulse","Agua",99,5,"ataque que causa una onda acuatica que golpea al oponente"));
-	}else if(tipo=="Fuego"){
-		moves.push_back(new Ataque("Thunder puch","Electrico",95,8,"ataque que causa una descarga electrica de un golpe"));
+	if(typeid(pokemonElegido) == typeid(Fire)){
 		moves.push_back(new Ataque("Flamethrower","Fuego",99,5,"ataque que lanza fuego al oponente"));
-	}else{
-		
-		moves.push_back(new Ataque("Rock tomb","Roca",90,10,"ataque que tumba rocas sobre el oponente"));
-		moves.push_back(new Ataque("Leaf blade","Hoja",99,5,"ataque lanza hojas afiladas contra el oponente"));
+		moves.push_back(new Ataque("Fire Punch","Fuego",100,8,"ataque que lanza fuego al oponente"));
+		moves.push_back(new Ataque("Iron Tail","Acero",75,7,"ataque que lanza fuego al oponente"));
+		moves.push_back(new Ataque("Dragon Claw","Fuego",95,6,"ataque que lanza fuego al oponente"));
+		moves.push_back(new Ataque("Fire Blast","Fuego",85,5,"ataque que lanza fuego al oponente"));
+		moves.push_back(new Ataque("Overheat","Fuego",90,4,"ataque que lanza fuego al oponente"));
+	}else if(typeid(pokemonElegido) == typeid(Thunder)){
+		moves.push_back(new Ataque("Thundershock","Electrico",100,4,"ataque que causa una descarga electrica mediante un trueno"));
+		moves.push_back(new Ataque("Thunder puch","Electrico",95,8,"ataque que causa una descarga electrica de un golpe"));
+		moves.push_back(new Ataque("Electro Ball","Electrico",100,5,"ataque que crea una bola de electricidad golpeando con ella al oponente"));
+		moves.push_back(new Ataque("Tail Whip","Electrico",100,8,"ataque que crea una bola de electricidad golpeando con ella al oponente"));
+		moves.push_back(new Ataque("Discharge","Electrico",100,6,"ataque que crea una bola de electricidad golpeando con ella al oponente"));
+		moves.push_back(new Ataque("Thunder Wave","Electrico",100,4,"ataque que crea una bola de electricidad golpeando con ella al oponente"));
+	}else if(typeid(pokemonElegido) == typeid(water)){
+		moves.push_back(new Ataque("Water pulse","Agua",99,5,"ataque que causa una onda acuatica que golpea al oponente"));
+		moves.push_back(new Ataque("Blizzard","Agua",70,7,"ataque que causa una onda acuatica que golpea al oponente"));
+		moves.push_back(new Ataque("Water gun","Agua",100,6,"ataque que causa una onda acuatica que golpea al oponente"));
+		moves.push_back(new Ataque("Bubble Beam","Agua",95,6,"ataque que causa una onda acuatica que golpea al oponente"));
+		moves.push_back(new Ataque("Counter","Lucha",100,4,"ataque que causa una onda acuatica que golpea al oponente"));
+		moves.push_back(new Ataque("Body Slam","Normal",100,8,"ataque que causa una onda acuatica que golpea al oponente"));
 	}
 	return moves;
 }
-vector<Move*> generar_moves(string tipo){
+vector<Move*> generar_moves(Pokemon pokemonElegido){
 	vector<Move*> moves;
-	moves.push_back(new Ataque("Takle","Normal",100,15,"ataque simple que baja la vida del oponente con respecto a tu poder de ataque"));
-	if(tipo=="Agua"){
-		moves.push_back(new Ataque("Water pulse","Agua",99,5,"ataque que causa una onda acuatica que golpea al oponente"));
-	}else if(tipo=="Fuego"){
-		moves.push_back(new Ataque("Thunder puch","Electrico",95,8,"ataque que causa una descarga electrica de un golpe"));
+	if(typeid(pokemonElegido) == typeid(Fire)){
 		moves.push_back(new Ataque("Flamethrower","Fuego",99,5,"ataque que lanza fuego al oponente"));
-	}else{
+		moves.push_back(new Ataque("Fire Punch","Fuego",100,8,"ataque que lanza fuego al oponente"));
+		moves.push_back(new Ataque("Iron Tail","Acero",75,7,"ataque que lanza fuego al oponente"));
+		moves.push_back(new Ataque("Dragon Claw","Fuego",95,6,"ataque que lanza fuego al oponente"));
+		moves.push_back(new Ataque("Fire Blast","Fuego",85,5,"ataque que lanza fuego al oponente"));
+		moves.push_back(new Ataque("Overheat","Fuego",90,4,"ataque que lanza fuego al oponente"));
+	}else if(typeid(pokemonElegido) == typeid(Thunder)){
+		moves.push_back(new Ataque("Thundershock","Electrico",100,4,"ataque que causa una descarga electrica mediante un trueno"));
 		moves.push_back(new Ataque("Thunder puch","Electrico",95,8,"ataque que causa una descarga electrica de un golpe"));
-		moves.push_back(new Ataque("Leaf blade","Hoja",99,5,"ataque lanza hojas afiladas contra el oponente"));
+		moves.push_back(new Ataque("Electro Ball","Electrico",100,5,"ataque que crea una bola de electricidad golpeando con ella al oponente"));
+		moves.push_back(new Ataque("Tail Whip","Electrico",100,8,"ataque que crea una bola de electricidad golpeando con ella al oponente"));
+		moves.push_back(new Ataque("Discharge","Electrico",100,6,"ataque que crea una bola de electricidad golpeando con ella al oponente"));
+		moves.push_back(new Ataque("Thunder Wave","Electrico",100,4,"ataque que crea una bola de electricidad golpeando con ella al oponente"));
+	}else if(typeid(pokemonElegido) == typeid(water)){
+		moves.push_back(new Ataque("Water pulse","Agua",99,5,"ataque que causa una onda acuatica que golpea al oponente"));
+		moves.push_back(new Ataque("Blizzard","Agua",70,7,"ataque que causa una onda acuatica que golpea al oponente"));
+		moves.push_back(new Ataque("Water gun","Agua",100,6,"ataque que causa una onda acuatica que golpea al oponente"));
+		moves.push_back(new Ataque("Bubble Beam","Agua",95,6,"ataque que causa una onda acuatica que golpea al oponente"));
+		moves.push_back(new Ataque("Counter","Lucha",100,4,"ataque que causa una onda acuatica que golpea al oponente"));
+		moves.push_back(new Ataque("Body Slam","Normal",100,8,"ataque que causa una onda acuatica que golpea al oponente"));
 	}
-	moves.push_back(new Ataque("Rock tomb","Roca",90,10,"ataque que tumba rocas sobre el oponente"));	
-	moves.push_back(new Ataque("Aerial ace","Volador",100,8,"ataque aereo que nunca falla"));
-	
 	return moves;
 }
 vector<Pokemon*> generar_pokemons(){
@@ -894,9 +861,9 @@ vector<Pokemon*> generar_pokemons(){
 	vector<Move*> moves1;
 	vector<Move*> moves2;
 	vector<Move*> moves3;
-	opciones.push_back(new Pokemon("Charmeleon","Fuego",50,17,10,80,moves1));
-	opciones.push_back(new Pokemon("Frogadier","Agua",50,15,11,90,moves2));
-	opciones.push_back(new Pokemon("Grovyle","Hoja",50,16,12,85,moves3));
+	opciones.push_back(new Fire("Charmander",50,17,10,80,moves1));
+	opciones.push_back(new Thunder("Pikachu",50,15,11,90,moves2));
+	opciones.push_back(new water("Squirtle",50,16,12,85,moves3));
 	return opciones;
 }
 void pokebola(int color){

@@ -8,11 +8,10 @@ using std::string;
 class Pokemon
 {
 	string nombre;
-	string tipo;
 	int vida,ataque,defensa,velocidad;
 	vector<Move*> moves;
 public:
-	Pokemon(string,string,int,int,int,int,vector<Move*>);
+	Pokemon(string,int,int,int,int,vector<Move*>);
 	Pokemon();
 	Pokemon(const Pokemon*);
 	string getNombre();
@@ -21,9 +20,7 @@ public:
 	int getDefensa();
 	int getVelocidad();
 	vector<Move*> getMoves();
-	string getTipo();
 	void setNombre(string);
-	void setTipo(string);
 	void setVida(int);
 	void setAtaque(int);
 	void setDefensa(int);

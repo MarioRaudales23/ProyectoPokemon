@@ -8,9 +8,8 @@ using std::string;
 using std::stringstream;
 using std::endl;
 
-Pokemon::Pokemon(string nombre,string tipo,int vida,int ataque,int defensa,int velocidad,vector<Move*> moves){
+Pokemon::Pokemon(string nombre,int vida,int ataque,int defensa,int velocidad,vector<Move*> moves){
 	this->nombre=nombre;
-	this->tipo=tipo;
 	this->vida=vida;
 	this->ataque=ataque;
 	this->defensa=defensa;
@@ -21,7 +20,6 @@ Pokemon::Pokemon(){
 }
 Pokemon::Pokemon(const Pokemon* r){
 	this->nombre=r->nombre;
-	this->tipo=r->tipo;
 	this->vida=r->vida;
 	this->ataque=r->ataque;
 	this->defensa=r->defensa;
@@ -43,14 +41,8 @@ int Pokemon::getDefensa(){
 int Pokemon::getVelocidad(){
 	return velocidad;
 }
-string Pokemon::getTipo(){
-	return tipo;
-}
 void Pokemon::setNombre(string nombre){
 	this->nombre=nombre;
-}
-void Pokemon::setTipo(string tipo){
-	this->tipo=tipo;
 }
 vector<Move*> Pokemon::getMoves(){
 	return moves;
