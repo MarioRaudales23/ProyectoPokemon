@@ -22,8 +22,8 @@ void pokebola(int);
 void Combate(Pokemon,Pokemon);
 void cuadrosDeBatalla(Pokemon,vector<Move*>);
 vector<Pokemon*> generar_pokemons();
-vector<Move*> generar_moves(Pokemon);
-vector<Move*> oponent_moves(Pokemon);
+vector<Move*> generar_moves(Pokemon*);
+vector<Move*> oponent_moves(Pokemon*);
 int main(int argc, char const *argv[])
 {
 	initscr();
@@ -59,12 +59,13 @@ int main(int argc, char const *argv[])
 		mvprintw(30,(y/2)-10,"Salir (ESC)");
 		attroff(COLOR_PAIR(8));
 		enter=getch();
-		Pokemon player;
-		/*Fire player;
-		Water player;
-		Thunder player;*/
+		//Pokemon* player;
+		Fire* playerFuego;
+		Water* playerAgua;
+		Thunder* playerTrueno;
 		if(enter==10){
 			vector<Pokemon*> pokemons=generar_pokemons();
+			vector<Move*> moves;
 			attron(COLOR_PAIR(2));
 			limpiar();
 			attroff(COLOR_PAIR(2));
@@ -85,26 +86,29 @@ int main(int argc, char const *argv[])
 				int elegido=getch();
 				vector <Move*> movesVacio;
 				if((elegido-48)==0){
-					player=new Fire("Charmander",50,17,10,80,movesVacio);
+					playerFuego=new Fire("Charmander",50,17,10,80,movesVacio);
+					moves = generar_moves(playerFuego);
 					pokemons.erase(pokemons.begin()+(elegido-48));
 					mvprintw(0,(y/2)-20,"(presione cualquier tecla para continuar)");
-					mvprintw(20,(y/2)-20,"Usted a elegido a %s como su Pokemon                                                              ",player.getNombre().c_str());	
+					mvprintw(20,(y/2)-20,"Usted a elegido a %s como su Pokemon                                                              ",playerFuego->getNombre().c_str());	
 					mvprintw(21,(y/2)-26,"                                                                                  ");
 					revision=0;
 					avanzar=getch();
 				}else if((elegido-48)==1){
-					player=new Thunder("Pikachu",50,15,11,90,movesVacio);
+					playerTrueno=new Thunder("Pikachu",50,15,11,90,movesVacio);
+					moves = generar_moves(playerTrueno);
 					pokemons.erase(pokemons.begin()+(elegido-48));
 					mvprintw(0,(y/2)-20,"(presione cualquier tecla para continuar)");
-					mvprintw(20,(y/2)-20,"Usted a elegido a %s como su Pokemon                                                              ",player.getNombre().c_str());	
+					mvprintw(20,(y/2)-20,"Usted a elegido a %s como su Pokemon                                                              ",playerTrueno->getNombre().c_str());	
 					mvprintw(21,(y/2)-26,"                                                                                  ");
 					revision=0;
 					avanzar=getch();
 				}else if ((elegido-48)==2){
-					player=new Water("Squirtle",50,16,12,85,movesVacio);
+					playerAgua=new Water("Squirtle",50,16,12,85,movesVacio);
+					moves = generar_moves(playerAgua);
 					pokemons.erase(pokemons.begin()+(elegido-48));
 					mvprintw(0,(y/2)-20,"(presione cualquier tecla para continuar)");
-					mvprintw(20,(y/2)-20,"Usted a elegido a %s como su Pokemon                                                              ",player.getNombre().c_str());	
+					mvprintw(20,(y/2)-20,"Usted a elegido a %s como su Pokemon                                                              ",playerAgua->getNombre().c_str());	
 					mvprintw(21,(y/2)-26,"                                                                                  ");
 					revision=0;
 					avanzar=getch();
@@ -115,7 +119,6 @@ int main(int argc, char const *argv[])
 				}
 				attroff(COLOR_PAIR(8));
 			}
-			vector<Move*> moves = generar_moves(player);
 			vector<Move*> playerMoves;
 			attron(COLOR_PAIR(2));
 			limpiar();
@@ -159,11 +162,32 @@ int main(int argc, char const *argv[])
 				}
 				attroff(COLOR_PAIR(8));
 			}
-			player.setMoves(playerMoves);
+			if (playerAgua == NULL && playerTrueno == NULL)
+				playerFuego->setMoves(playerMoves);
+			else if(playerAgua == NULL && playerFuego == NULL)
+				playerTrueno->setMoves(playerMoves);
+			else
+				playerAgua->setMoves(playerMoves);
 			int oponent=rand()%pokemons.size();
-			Pokemon oponente=Pokemon(pokemons[oponent]);
-			oponente.setMoves(oponent_moves(oponente));
-			Combate(player,oponente);
+			Pokemon* oponente;
+			vector<Move*> vacio;
+			for (int i = 0; i < pokemons.size(); i++){
+				if (i == oponent){
+					if (typeid(pokemons.at(oponent)) == typeid(Thunder))
+						oponente = new Thunder("Pikachu",50,15,11,90,vacio);
+					else if (typeid(pokemons.at(oponent)) == typeid(Water))
+						oponente = new Water("Squirtle",50,16,12,85,vacio);
+					else if (typeid(pokemons.at(oponent)) == typeid(Fire))
+						oponente = new Fire("Charmander",50,17,10,80,vacio);
+				}
+			}
+			oponente->setMoves(oponent_moves(oponente));
+			if (playerAgua == NULL && playerTrueno == NULL)
+				Combate(playerFuego,oponente);
+			else if(playerAgua == NULL && playerFuego == NULL)
+				Combate(playerTrueno,oponente);
+			else
+				Combate(playerAgua,oponente);
 			refresh();
 		}else if (enter==98){
 			attron(COLOR_PAIR(2));
@@ -196,7 +220,7 @@ int main(int argc, char const *argv[])
 	return 0;
 }
 
-void cuadrosDeBatalla(Pokemon jugador1,Pokemon jugador2,vector<Move*> ataques){
+void cuadrosDeBatalla(Pokemon jugador1,Pokemon jugador2){
 	int y , x;
 	getmaxyx (stdscr,y,x);
 	const int vida1 = jugador1.getVida();
@@ -336,6 +360,7 @@ void Combate(Pokemon player,Pokemon cpu){
 		{
 			attron(COLOR_PAIR(8));
 			while(revision==0){
+				cuadrosDeBatalla(player,cpu);
 				mvprintw(20,(y/2)-30,"ingrese el numero del ataque que va ha usar contra el oponente");
 				for (int i = 0; i < player.getMoves().size(); ++i)
 				{
@@ -383,6 +408,7 @@ void Combate(Pokemon player,Pokemon cpu){
 		}else{
 			tiene2=true;
 		}
+		
 		if (player.getVelocidad()>cpu.getVelocidad())
 		{
 			mvprintw(20,(y/2)-30,"%s ha usado %s                                                      ",player.getNombre().c_str(),player.getMoves()[elegido]->getNombre().c_str());
@@ -472,49 +498,43 @@ void Combate(Pokemon player,Pokemon cpu){
 		avanzar=getch();			
 	}
 }
-vector<Move*> oponent_moves(Pokemon pokemonElegido){
+vector<Move*> oponent_moves(Pokemon* pokemonElegido){
 	vector<Move*> moves;
 	if(typeid(pokemonElegido) == typeid(Fire)){
 		moves.push_back(new Ataque("Flamethrower","Fuego",99,5,"ataque que lanza fuego al oponente"));
 		moves.push_back(new Ataque("Fire Punch","Fuego",100,8,"ataque que lanza fuego al oponente"));
-		moves.push_back(new Ataque("Iron Tail","Acero",75,7,"ataque que lanza fuego al oponente"));
 		moves.push_back(new Ataque("Dragon Claw","Fuego",95,6,"ataque que lanza fuego al oponente"));
 		moves.push_back(new Ataque("Fire Blast","Fuego",85,5,"ataque que lanza fuego al oponente"));
-		moves.push_back(new Ataque("Overheat","Fuego",90,4,"ataque que lanza fuego al oponente"));
 	}else if(typeid(pokemonElegido) == typeid(Thunder)){
 		moves.push_back(new Ataque("Thundershock","Electrico",100,4,"ataque que causa una descarga electrica mediante un trueno"));
-		moves.push_back(new Ataque("Thunder puch","Electrico",95,8,"ataque que causa una descarga electrica de un golpe"));
 		moves.push_back(new Ataque("Electro Ball","Electrico",100,5,"ataque que crea una bola de electricidad golpeando con ella al oponente"));
 		moves.push_back(new Ataque("Tail Whip","Electrico",100,8,"ataque que crea una bola de electricidad golpeando con ella al oponente"));
-		moves.push_back(new Ataque("Discharge","Electrico",100,6,"ataque que crea una bola de electricidad golpeando con ella al oponente"));
 		moves.push_back(new Ataque("Thunder Wave","Electrico",100,4,"ataque que crea una bola de electricidad golpeando con ella al oponente"));
 	}else if(typeid(pokemonElegido) == typeid(Water)){
 		moves.push_back(new Ataque("Water pulse","Agua",99,5,"ataque que causa una onda acuatica que golpea al oponente"));
 		moves.push_back(new Ataque("Blizzard","Agua",70,7,"ataque que causa una onda acuatica que golpea al oponente"));
-		moves.push_back(new Ataque("Water gun","Agua",100,6,"ataque que causa una onda acuatica que golpea al oponente"));
 		moves.push_back(new Ataque("Bubble Beam","Agua",95,6,"ataque que causa una onda acuatica que golpea al oponente"));
-		moves.push_back(new Ataque("Counter","Lucha",100,4,"ataque que causa una onda acuatica que golpea al oponente"));
 		moves.push_back(new Ataque("Body Slam","Normal",100,8,"ataque que causa una onda acuatica que golpea al oponente"));
 	}
 	return moves;
 }
-vector<Move*> generar_moves(Pokemon pokemonElegido){
+vector<Move*> generar_moves(Pokemon* pokemonElegido){
 	vector<Move*> moves;
-	if(typeid(pokemonElegido) == typeid(Fire)){
+	if(typeid(pokemonElegido) == typeid(Fire*)){
 		moves.push_back(new Ataque("Flamethrower","Fuego",99,5,"ataque que lanza fuego al oponente"));
 		moves.push_back(new Ataque("Fire Punch","Fuego",100,8,"ataque que lanza fuego al oponente"));
 		moves.push_back(new Ataque("Iron Tail","Acero",75,7,"ataque que lanza fuego al oponente"));
 		moves.push_back(new Ataque("Dragon Claw","Fuego",95,6,"ataque que lanza fuego al oponente"));
 		moves.push_back(new Ataque("Fire Blast","Fuego",85,5,"ataque que lanza fuego al oponente"));
 		moves.push_back(new Ataque("Overheat","Fuego",90,4,"ataque que lanza fuego al oponente"));
-	}else if(typeid(pokemonElegido) == typeid(Thunder)){
+	}else if(typeid(pokemonElegido) == typeid(Thunder*)){
 		moves.push_back(new Ataque("Thundershock","Electrico",100,4,"ataque que causa una descarga electrica mediante un trueno"));
 		moves.push_back(new Ataque("Thunder puch","Electrico",95,8,"ataque que causa una descarga electrica de un golpe"));
 		moves.push_back(new Ataque("Electro Ball","Electrico",100,5,"ataque que crea una bola de electricidad golpeando con ella al oponente"));
 		moves.push_back(new Ataque("Tail Whip","Electrico",100,8,"ataque que crea una bola de electricidad golpeando con ella al oponente"));
 		moves.push_back(new Ataque("Discharge","Electrico",100,6,"ataque que crea una bola de electricidad golpeando con ella al oponente"));
 		moves.push_back(new Ataque("Thunder Wave","Electrico",100,4,"ataque que crea una bola de electricidad golpeando con ella al oponente"));
-	}else if(typeid(pokemonElegido) == typeid(Water)){
+	}else if(typeid(pokemonElegido) == typeid(Water*)){
 		moves.push_back(new Ataque("Water pulse","Agua",99,5,"ataque que causa una onda acuatica que golpea al oponente"));
 		moves.push_back(new Ataque("Blizzard","Agua",70,7,"ataque que causa una onda acuatica que golpea al oponente"));
 		moves.push_back(new Ataque("Water gun","Agua",100,6,"ataque que causa una onda acuatica que golpea al oponente"));

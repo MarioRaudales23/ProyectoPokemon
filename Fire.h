@@ -10,6 +10,7 @@ class Fire: public Pokemon{
 private:
 	Move* especial;
 public:
+	Fire();
 	Fire(string,int,int,int,int,vector<Move*>);
 	~Fire();
 	Move* getSpecialM();
