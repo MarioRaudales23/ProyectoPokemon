@@ -5,8 +5,8 @@
 using std::vector;
 #include <string>
 using std::string;
+//Constructores.
 Thunder::Thunder(){
-
 }
 Thunder::Thunder(string nombre,int vida,int ataque,int defensa,int velocidad,vector<Move*> moves):
 Pokemon(nombre,vida,ataque,defensa,velocidad,moves){
@@ -15,6 +15,7 @@ Pokemon(nombre,vida,ataque,defensa,velocidad,moves){
 Thunder::~Thunder(){
 
 }
+//Castea el efecto especial nombrado en el constructor cual deja el usuario anade mas poder con respecto a su velocidad.
 Move* Thunder::getSpecialM(){
 	return especial;
 }

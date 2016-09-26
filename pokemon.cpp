@@ -7,7 +7,7 @@ using std::vector;
 using std::string;
 using std::stringstream;
 using std::endl;
-
+//Constructores.
 Pokemon::Pokemon(string nombre,int vida,int ataque,int defensa,int velocidad,vector<Move*> moves){
 	this->nombre=nombre;
 	this->vida=vida;
@@ -26,6 +26,8 @@ Pokemon::Pokemon(const Pokemon* r){
 	this->velocidad=r->velocidad;
 	this->moves=r->moves;
 }
+
+//Getters y Setters.
 string Pokemon::getNombre(){
 	return nombre;
 }
@@ -62,6 +64,7 @@ void Pokemon::setVelocidad(int velocidad){
 void Pokemon::setMoves(vector<Move*> moves){
 	this->moves=moves;
 }
+//toString.
 string Pokemon::toString(){
 	stringstream ss;
 	ss<<"Pokemon:"<<nombre<<endl;

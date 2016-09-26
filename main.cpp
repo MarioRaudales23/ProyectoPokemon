@@ -17,6 +17,7 @@
 using namespace std;
 char** traspaso(Pokemon);
 
+//Metodos y variables globales
 void limpiar();
 void pokebola(int);
 void Combate(Pokemon,Pokemon);
@@ -24,8 +25,11 @@ void cuadrosDeBatalla(Pokemon,vector<Move*>);
 vector<Pokemon*> generar_pokemons();
 vector<Move*> generar_moves(Pokemon*);
 vector<Move*> oponent_moves(Pokemon*);
+
+//Main
 int main(int argc, char const *argv[])
 {
+	//Se inicia los metodos ncurses y se elije el color palette para el background
 	initscr();
 	srand(time(NULL));
 	noecho();
@@ -44,6 +48,7 @@ int main(int argc, char const *argv[])
 	limpiar();
 	attroff(COLOR_PAIR(2));
 	int s,enter,avanzar;
+	//Pide al usuario que ingrese una tecla para operar.
 	printw("Presione cualquier tecla diferente ESC para iniciar el programa");
 	mvprintw(1,0,"Se le solicita al usuario que antes de iniciar con el uso de este programa tenga la terminal maximizada");
 	while((s=getch()!=27)){
@@ -60,6 +65,7 @@ int main(int argc, char const *argv[])
 		attroff(COLOR_PAIR(8));
 		enter=getch();
 		Pokemon* player;
+		//Si el usuario ingresa ENTER entra a modo seleccion de Pokemon.
 		if(enter==10){
 			vector<Pokemon*> pokemons=generar_pokemons();
 			attron(COLOR_PAIR(2));
@@ -67,6 +73,7 @@ int main(int argc, char const *argv[])
 			attroff(COLOR_PAIR(2));
 			pokebola(5);
 			int revision=1;
+			//Se muestra los Pokemons disponibles y se le solicita al usuario que ingrese un numero para elegir.
 			while(revision==1){
 				attron(COLOR_PAIR(8));
 				mvprintw(20,(y/2)-20,"Que pokemon desea elegir como su combatiente?                                            ");
@@ -79,6 +86,7 @@ int main(int argc, char const *argv[])
 					mvprintw(25+(i)*5,(y/2)-8,"-Defensa:%d",pokemons[i]->getDefensa());
 					mvprintw(26+(i)*5,(y/2)-8,"-Velocidad:%d",pokemons[i]->getVelocidad());
 				}
+				//Se le muestar al usuario la opcion elegida.
 				int elegido=getch();
 				vector <Move*> movesVacio;
 				if((elegido-48)==0){
@@ -112,6 +120,7 @@ int main(int argc, char const *argv[])
 				}
 				attroff(COLOR_PAIR(8));
 			}
+			// Ahora muestra al usuario la lista de movimientos a elegir cual solo puede elegir 4 movimientos.
 			vector<Move*> moves = generar_moves(player);
 			vector<Move*> playerMoves;
 			attron(COLOR_PAIR(2));
@@ -123,6 +132,7 @@ int main(int argc, char const *argv[])
 			mvprintw(20,(y/2)-20,"ahora se le mostrara la lista de movimientos que podra elegir,solo podra elegir 4");
 			avanzar=getch();
 			attroff(COLOR_PAIR(8));
+			//Este ciclo for deja que el usuario eliga 4 movimientos y a la vez remueve el movimiento para no poder volver a elegirse.
 			for (int j = 0; j < 4; j++){
 				attron(COLOR_PAIR(2));
 				limpiar();
@@ -152,6 +162,7 @@ int main(int argc, char const *argv[])
 				}
 				attroff(COLOR_PAIR(8));
 			}
+			//Se ejecuta el juego.
 			player->setMoves(playerMoves);
 			int oponent=rand()%pokemons.size();
 			Pokemon* oponente;
@@ -160,6 +171,7 @@ int main(int argc, char const *argv[])
 			oponente->setMoves(oponent_moves(oponente));
 			Combate(player,oponente);
 			refresh();
+			//Ingresa a la pagina de instrucciones.
 		}else if (enter==98){
 			attron(COLOR_PAIR(2));
 			limpiar();
@@ -190,7 +202,7 @@ int main(int argc, char const *argv[])
 	endwin();
 	return 0;
 }
-
+//Este metodo se utiliza para poder mostrar un cuadro con los ataques seleccionados.
 void cuadrosDeBatalla(Pokemon jugador1,Pokemon jugador2){
 	int y , x;
 	getmaxyx (stdscr,y,x);
@@ -210,7 +222,7 @@ void cuadrosDeBatalla(Pokemon jugador1,Pokemon jugador2){
 	mvprintw(32,(y/2)-16,"  |                               |                                        |                               |");
 	mvprintw(33,(y/2)-16,"  |_______________________________|                                        |_______________________________|");
 }
-
+//Este metodo comprueba la efectividad del ataque, muestra al usuario si el ataque fue efectivo, super efectivo o no my efectivo.
 int efectividad(string pokemon,string move){
 	int x,y;
 	getmaxyx(stdscr,x,y);
@@ -227,12 +239,14 @@ int efectividad(string pokemon,string move){
 	}
 	attroff(COLOR_PAIR(8));
 }
+//Este Metodo especificamente empieza el combate entre el usuario y un cpu.
 void Combate(Pokemon player,Pokemon cpu){
 	int avanzar;
 	int control=0;
 	int x,y;
 	getmaxyx(stdscr,x,y);
 	while(control==0){
+		//Induce al programa a generar el gui para que el usuario pueda interactuar.
 		attron(COLOR_PAIR(2));
 		limpiar();
 		attroff(COLOR_PAIR(2));
@@ -255,6 +269,7 @@ void Combate(Pokemon player,Pokemon cpu){
 		{
 			attron(COLOR_PAIR(8));
 			while(revision==0){
+				//Se le pide al usuario ingresar un ataque.
 				cuadrosDeBatalla(player,cpu);
 				mvprintw(20,(y/2)-30,"ingrese el numero del ataque que va ha usar contra el oponente");
 				elegido=getch();
@@ -270,6 +285,7 @@ void Combate(Pokemon player,Pokemon cpu){
 			}
 			attroff(COLOR_PAIR(8));
 		}else{
+			//Si el pokemon del usuario no tiene suficiente ataques el pokemon atacara pero tomara dano el mismo.
 			attron(COLOR_PAIR(8));
 			mvprintw(20,(y/2)-30,"ya no dispones de ataques que tengan usos");
 			mvprintw(21,(y/2)-30,"tu pokemon atacara pero a cambio de hacerse dano a si mismo");
@@ -298,9 +314,10 @@ void Combate(Pokemon player,Pokemon cpu){
 		}else{
 			tiene2=true;
 		}
-		
+		//para este "if" comprueba si el pokemon tiene una mayor velocidad que el pokemon del cpu cual permite ataca primero en el turno.
 		if (player.getVelocidad()>cpu.getVelocidad())
 		{
+			//Muestra al usuario que se uso el ataque elegido y el program decide con un random si el ataque a pegado, si el ataque pega se verifica si es efectivo o no.
 			mvprintw(20,(y/2)-30,"%s ha usado %s                                                      ",player.getNombre().c_str(),player.getMoves()[elegido]->getNombre().c_str());
 			avanzar=getch();
 			if((rand()%100)<=player.getMoves()[elegido]->getPrecision()){
@@ -323,6 +340,7 @@ void Combate(Pokemon player,Pokemon cpu){
 			}
 			
 			avanzar=getch();
+			//El pokemon del cpu ataca primero.
 		}else{
 			mvprintw(20,(y/2)-30,"%s ha usado %s                                                      ",cpu.getNombre().c_str(),cpu.getMoves()[elegido2]->getNombre().c_str());
 			avanzar=getch();
@@ -356,6 +374,7 @@ void Combate(Pokemon player,Pokemon cpu){
 			control = 0;
 		}
 	}
+	//Estos 3 "if"s verifican si el usuario a ganado, el cpu ganado, o el combate a finalizado.
 	if(control==1){
 		attron(COLOR_PAIR(2));
 		limpiar();
@@ -388,6 +407,7 @@ void Combate(Pokemon player,Pokemon cpu){
 		avanzar=getch();			
 	}
 }
+//Genera los movimientos del CPU.
 vector<Move*> oponent_moves(Pokemon* pokemonElegido){
 	vector<Move*> moves;
 		moves.push_back(new Ataque("Iron Tail","Acero",75,7,"ataque que lanza fuego al oponente"));
@@ -398,6 +418,7 @@ vector<Move*> oponent_moves(Pokemon* pokemonElegido){
 		moves.push_back(new Ataque("Tackle","Normal",100,8,"ataque que causa donde un pokemon hace una carga contra el otro"));
 	return moves;
 }
+//Genera los movimientos del usuario.
 vector<Move*> generar_moves(Pokemon* pokemonElegido){
 	vector<Move*> moves;
 		moves.push_back(new Ataque("Iron Tail","Acero",75,7,"ataque que lanza fuego al oponente"));
@@ -408,6 +429,7 @@ vector<Move*> generar_moves(Pokemon* pokemonElegido){
 		moves.push_back(new Ataque("Tackle","Normal",100,8,"ataque que causa donde un pokemon hace una carga contra el otro"));
 	return moves;
 }
+//Genera los pokemons.
 vector<Pokemon*> generar_pokemons(){
 	vector<Pokemon*> opciones;
 	vector<Move*> moves1;
@@ -418,6 +440,7 @@ vector<Pokemon*> generar_pokemons(){
 	opciones.push_back(new Water("Squirtle",50,16,12,85,moves3));
 	return opciones;
 }
+//Este metodo genera el sprite de la Pokebola.
 void pokebola(int color){
 	int x,y;
 	getmaxyx(stdscr,x,y);
@@ -459,6 +482,7 @@ void pokebola(int color){
 	attroff(COLOR_PAIR(color));
 	move(0,0);
 }
+//Este metodo simplemente limpia la patalla.
 void limpiar(){
 	int x,y;
 	getmaxyx(stdscr,x,y);

@@ -5,8 +5,10 @@
 using std::string;
 using std::stringstream;
 
+//Constructor ataque
 Ataque::Ataque(string nombre,string tipo,int precision,int usos,string descripcion):Move(nombre,tipo,precision,usos,descripcion){
 }
+//Se utiliza este metodo para poder determinar si el ataque fue efectivo, super efectivo,o no fue efectivo.
 int Ataque::efecto(int vida1,int ataque1,int vida2,int defensa2,int debil){
 	if(debil==1){
 		return vida2-ataque1;
@@ -16,6 +18,7 @@ int Ataque::efecto(int vida1,int ataque1,int vida2,int defensa2,int debil){
 		return vida2-1;
 	}
 }
+//toString
 string Ataque::toString(){
 	return Move::toString();
 }

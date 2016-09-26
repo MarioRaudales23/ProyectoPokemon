@@ -5,7 +5,7 @@
 using std::string;
 using std::stringstream;
 using std::endl;
-
+//Constructor Move.
 Move::Move(string nombre,string tipo,int precision,int usos,string descripcion){
 	this->nombre=nombre;
 	this->tipo=tipo;
@@ -13,6 +13,7 @@ Move::Move(string nombre,string tipo,int precision,int usos,string descripcion){
 	this->usos=usos;
 	this->descripcion=descripcion;
 }
+//Getters y Setters.
 string Move::getNombre(){
 	return nombre;
 }
@@ -43,8 +44,10 @@ void Move::setUsos(int usos){
 void Move::setPrecision(int precision){
 	this->precision=precision;
 }
+//Instancia efecto para ser utilizado en metodo "efecto" en el main.
 int Move::efecto(int vida1,int ataque1,int vida2,int defensa2,int debil){
 }
+//toString.
 string Move::toString(){
 	stringstream ss;
 	ss<<nombre<<" -"<<tipo<<"-";

@@ -15,6 +15,7 @@ Pokemon(nombre,vida,ataque,defensa,velocidad,moves){
 Water::~Water(){
 
 }
+//Castea el efecto especial nombrado en el constructor.
 Move* Water::getSpecialM(){
 	return especial;
 }
