@@ -200,15 +200,15 @@ void cuadrosDeBatalla(Pokemon jugador1,Pokemon jugador2){
 	mvprintw(22,(y/2)-16,"  _________________________________                                        _________________________________");
 	mvprintw(23,(y/2)-16,"  |  __________	    __________  |                                        |  __________	     __________  |");
 	mvprintw(24,(y/2)-16,"  | |          |     |          | |                                        | |          |     |          | |");
-	mvprintw(25,(y/2)-16,"  | |%s|	 |%s| |                                        | |%s|	  |%s| |",jugador1.getMoves().at(0)->getNombre().c_str(),jugador1.getMoves().at(1)->getNombre().c_str(),jugador2.getMoves().at(0)->getNombre().c_str(),jugador2.getMoves().at(1)->getNombre().c_str());
+	mvprintw(25,(y/2)-16,"  | |0 %s|   |1 %s| |                                        | |%s|	  |%s| |",jugador1.getMoves().at(0)->getNombre().c_str(),jugador1.getMoves().at(1)->getNombre().c_str(),jugador2.getMoves().at(0)->getNombre().c_str(),jugador2.getMoves().at(1)->getNombre().c_str());
 	mvprintw(26,(y/2)-16,"  | |__________|     |__________| |                                        | |__________|     |__________| |");
 	mvprintw(27,(y/2)-16,"  |                               |                                        |                               |");
 	mvprintw(28,(y/2)-16,"  |  __________       __________  |                                        |  __________       __________  |");
 	mvprintw(29,(y/2)-16,"  | |          |     |          | |                                        | |          |     |          | |");
-	mvprintw(30,(y/2)-16,"  | |%s|   |%s| |                                        | |%s|	  |%s| |",jugador1.getMoves().at(2)->getNombre().c_str(),jugador1.getMoves().at(3)->getNombre().c_str(),jugador2.getMoves().at(2)->getNombre().c_str(),jugador2.getMoves().at(3)->getNombre().c_str());
+	mvprintw(30,(y/2)-16,"  | |2 %s|   |3 %s| |                                         | |%s|    |%s| |",jugador1.getMoves().at(2)->getNombre().c_str(),jugador1.getMoves().at(3)->getNombre().c_str(),jugador2.getMoves().at(2)->getNombre().c_str(),jugador2.getMoves().at(3)->getNombre().c_str());
 	mvprintw(31,(y/2)-16,"  | |__________|     |__________| |                                        | |__________|     |__________| |");
 	mvprintw(32,(y/2)-16,"  |                               |                                        |                               |");
-	mvprintw(33,(y/2)-16,"  ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾                                        ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾");
+	mvprintw(33,(y/2)-16,"  |_______________________________|                                        |_______________________________|");
 }
 
 int efectividad(string pokemon,string move){
