@@ -59,13 +59,9 @@ int main(int argc, char const *argv[])
 		mvprintw(30,(y/2)-10,"Salir (ESC)");
 		attroff(COLOR_PAIR(8));
 		enter=getch();
-		//Pokemon* player;
-		Fire* playerFuego;
-		Water* playerAgua;
-		Thunder* playerTrueno;
+		Pokemon* player;
 		if(enter==10){
 			vector<Pokemon*> pokemons=generar_pokemons();
-			vector<Move*> moves;
 			attron(COLOR_PAIR(2));
 			limpiar();
 			attroff(COLOR_PAIR(2));
@@ -86,29 +82,26 @@ int main(int argc, char const *argv[])
 				int elegido=getch();
 				vector <Move*> movesVacio;
 				if((elegido-48)==0){
-					playerFuego=new Fire("Charmander",50,17,10,80,movesVacio);
-					moves = generar_moves(playerFuego);
+					player=new Fire("Charmander",50,17,10,80,movesVacio);
 					pokemons.erase(pokemons.begin()+(elegido-48));
 					mvprintw(0,(y/2)-20,"(presione cualquier tecla para continuar)");
-					mvprintw(20,(y/2)-20,"Usted a elegido a %s como su Pokemon                                                              ",playerFuego->getNombre().c_str());	
+					mvprintw(20,(y/2)-20,"Usted a elegido a %s como su Pokemon                                                              ",player->getNombre().c_str());	
 					mvprintw(21,(y/2)-26,"                                                                                  ");
 					revision=0;
 					avanzar=getch();
 				}else if((elegido-48)==1){
-					playerTrueno=new Thunder("Pikachu",50,15,11,90,movesVacio);
-					moves = generar_moves(playerTrueno);
+					player=new Thunder("Pikachu",50,15,11,90,movesVacio);
 					pokemons.erase(pokemons.begin()+(elegido-48));
 					mvprintw(0,(y/2)-20,"(presione cualquier tecla para continuar)");
-					mvprintw(20,(y/2)-20,"Usted a elegido a %s como su Pokemon                                                              ",playerTrueno->getNombre().c_str());	
+					mvprintw(20,(y/2)-20,"Usted a elegido a %s como su Pokemon                                                              ",player->getNombre().c_str());	
 					mvprintw(21,(y/2)-26,"                                                                                  ");
 					revision=0;
 					avanzar=getch();
 				}else if ((elegido-48)==2){
-					playerAgua=new Water("Squirtle",50,16,12,85,movesVacio);
-					moves = generar_moves(playerAgua);
+					player=new Water("Squirtle",50,16,12,85,movesVacio);
 					pokemons.erase(pokemons.begin()+(elegido-48));
 					mvprintw(0,(y/2)-20,"(presione cualquier tecla para continuar)");
-					mvprintw(20,(y/2)-20,"Usted a elegido a %s como su Pokemon                                                              ",playerAgua->getNombre().c_str());	
+					mvprintw(20,(y/2)-20,"Usted a elegido a %s como su Pokemon                                                              ",player->getNombre().c_str());	
 					mvprintw(21,(y/2)-26,"                                                                                  ");
 					revision=0;
 					avanzar=getch();
@@ -119,6 +112,7 @@ int main(int argc, char const *argv[])
 				}
 				attroff(COLOR_PAIR(8));
 			}
+			vector<Move*> moves = generar_moves(player);
 			vector<Move*> playerMoves;
 			attron(COLOR_PAIR(2));
 			limpiar();
@@ -129,7 +123,7 @@ int main(int argc, char const *argv[])
 			mvprintw(20,(y/2)-20,"ahora se le mostrara la lista de movimientos que podra elegir,solo podra elegir 4");
 			avanzar=getch();
 			attroff(COLOR_PAIR(8));
-			while(revision==0){
+			for (int j = 0; j < 4; j++){
 				attron(COLOR_PAIR(2));
 				limpiar();
 				attroff(COLOR_PAIR(2));
@@ -138,8 +132,8 @@ int main(int argc, char const *argv[])
 				mvprintw(0,(y/2)-20,"(presione cualquier tecla para continuar)%d",moves.size());
 				for (int i = 0; i < moves.size(); ++i) {
 					mvprintw(22+(i)*3,(y/2)-26,"%d-%s",i,moves.at(i)->toString().c_str());
-					//mvprintw(23+(i)*3,(y/2)-26,"   Precision:%d  Usos:%d",moves.at(i)->getPrecision(),moves[i]->getUsos());
-					//mvprintw(24+(i)*3,(y/2)-26,"Descripcion: %s",moves.at(i)->getDescripcion().c_str());
+					mvprintw(23+(i)*3,(y/2)-26,"   Precision:%d  Usos:%d",moves.at(i)->getPrecision(),moves[i]->getUsos());
+					mvprintw(24+(i)*3,(y/2)-26,"Descripcion: %s",moves.at(i)->getDescripcion().c_str());
 				}
 				mvprintw(20,(y/2)-20,"Que movimiento desea elegir para que su pokemon lo aprenda?");
 				mvprintw(21,(y/2)-26,"(presione la tecla del numero del movimiento que desea elegir de la lista)");
@@ -149,45 +143,22 @@ int main(int argc, char const *argv[])
 					mvprintw(20,(y/2)-20,"Usted a elegido %s como nuevo movimiento para su pokemon                                                             ",moves[elegido-48]->getNombre().c_str());	
 					mvprintw(21,(y/2)-26,"                                                                                  ");
 					moves.erase(moves.begin()+(elegido-48));
-					if(playerMoves.size()==4){
-						mvprintw(20,(y/2)-20,"                                                                                  ");
-						mvprintw(20,(y/2)-20,"Usted ya ha elegido los movimiento para su pokemon");
-						revision=1;
-					}
 					avanzar=getch();
 				}else{
 					mvprintw(20,(y/2)-20,"El numero que ingreso no existe en la lista como opcion                                                             ");
 					mvprintw(21,(y/2)-26,"                                                                                  ");
+					j--;
 					avanzar=getch();
 				}
 				attroff(COLOR_PAIR(8));
 			}
-			if (playerAgua == NULL && playerTrueno == NULL)
-				playerFuego->setMoves(playerMoves);
-			else if(playerAgua == NULL && playerFuego == NULL)
-				playerTrueno->setMoves(playerMoves);
-			else
-				playerAgua->setMoves(playerMoves);
+			player->setMoves(playerMoves);
 			int oponent=rand()%pokemons.size();
 			Pokemon* oponente;
 			vector<Move*> vacio;
-			for (int i = 0; i < pokemons.size(); i++){
-				if (i == oponent){
-					if (typeid(pokemons.at(oponent)) == typeid(Thunder))
-						oponente = new Thunder("Pikachu",50,15,11,90,vacio);
-					else if (typeid(pokemons.at(oponent)) == typeid(Water))
-						oponente = new Water("Squirtle",50,16,12,85,vacio);
-					else if (typeid(pokemons.at(oponent)) == typeid(Fire))
-						oponente = new Fire("Charmander",50,17,10,80,vacio);
-				}
-			}
+			oponente = pokemons.at(oponent);
 			oponente->setMoves(oponent_moves(oponente));
-			if (playerAgua == NULL && playerTrueno == NULL)
-				Combate(playerFuego,oponente);
-			else if(playerAgua == NULL && playerFuego == NULL)
-				Combate(playerTrueno,oponente);
-			else
-				Combate(playerAgua,oponente);
+			Combate(player,oponente);
 			refresh();
 		}else if (enter==98){
 			attron(COLOR_PAIR(2));
