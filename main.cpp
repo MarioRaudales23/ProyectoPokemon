@@ -500,48 +500,22 @@ void Combate(Pokemon player,Pokemon cpu){
 }
 vector<Move*> oponent_moves(Pokemon* pokemonElegido){
 	vector<Move*> moves;
-	if(typeid(pokemonElegido) == typeid(Fire)){
-		moves.push_back(new Ataque("Flamethrower","Fuego",99,5,"ataque que lanza fuego al oponente"));
-		moves.push_back(new Ataque("Fire Punch","Fuego",100,8,"ataque que lanza fuego al oponente"));
-		moves.push_back(new Ataque("Dragon Claw","Fuego",95,6,"ataque que lanza fuego al oponente"));
-		moves.push_back(new Ataque("Fire Blast","Fuego",85,5,"ataque que lanza fuego al oponente"));
-	}else if(typeid(pokemonElegido) == typeid(Thunder)){
-		moves.push_back(new Ataque("Thundershock","Electrico",100,4,"ataque que causa una descarga electrica mediante un trueno"));
-		moves.push_back(new Ataque("Electro Ball","Electrico",100,5,"ataque que crea una bola de electricidad golpeando con ella al oponente"));
+		moves.push_back(new Ataque("Iron Tail","Acero",75,7,"ataque que lanza fuego al oponente"));
+		moves.push_back(new Ataque("Dragon Claw","Dragon",95,6,"ataque que lanza fuego al oponente"));
 		moves.push_back(new Ataque("Tail Whip","Electrico",100,8,"ataque que crea una bola de electricidad golpeando con ella al oponente"));
-		moves.push_back(new Ataque("Thunder Wave","Electrico",100,4,"ataque que crea una bola de electricidad golpeando con ella al oponente"));
-	}else if(typeid(pokemonElegido) == typeid(Water)){
-		moves.push_back(new Ataque("Water pulse","Agua",99,5,"ataque que causa una onda acuatica que golpea al oponente"));
-		moves.push_back(new Ataque("Blizzard","Agua",70,7,"ataque que causa una onda acuatica que golpea al oponente"));
-		moves.push_back(new Ataque("Bubble Beam","Agua",95,6,"ataque que causa una onda acuatica que golpea al oponente"));
+		moves.push_back(new Ataque("Counter","Lucha",100,4,"ataque que causa una onda acuatica que golpea al oponente"));
 		moves.push_back(new Ataque("Body Slam","Normal",100,8,"ataque que causa una onda acuatica que golpea al oponente"));
-	}
+		moves.push_back(new Ataque("Tackle","Normal",100,8,"ataque que causa donde un pokemon hace una carga contra el otro"));
 	return moves;
 }
 vector<Move*> generar_moves(Pokemon* pokemonElegido){
 	vector<Move*> moves;
-	if(typeid(pokemonElegido) == typeid(Fire*)){
-		moves.push_back(new Ataque("Flamethrower","Fuego",99,5,"ataque que lanza fuego al oponente"));
-		moves.push_back(new Ataque("Fire Punch","Fuego",100,8,"ataque que lanza fuego al oponente"));
 		moves.push_back(new Ataque("Iron Tail","Acero",75,7,"ataque que lanza fuego al oponente"));
-		moves.push_back(new Ataque("Dragon Claw","Fuego",95,6,"ataque que lanza fuego al oponente"));
-		moves.push_back(new Ataque("Fire Blast","Fuego",85,5,"ataque que lanza fuego al oponente"));
-		moves.push_back(new Ataque("Overheat","Fuego",90,4,"ataque que lanza fuego al oponente"));
-	}else if(typeid(pokemonElegido) == typeid(Thunder*)){
-		moves.push_back(new Ataque("Thundershock","Electrico",100,4,"ataque que causa una descarga electrica mediante un trueno"));
-		moves.push_back(new Ataque("Thunder puch","Electrico",95,8,"ataque que causa una descarga electrica de un golpe"));
-		moves.push_back(new Ataque("Electro Ball","Electrico",100,5,"ataque que crea una bola de electricidad golpeando con ella al oponente"));
+		moves.push_back(new Ataque("Dragon Claw","Dragon",95,6,"ataque que lanza fuego al oponente"));
 		moves.push_back(new Ataque("Tail Whip","Electrico",100,8,"ataque que crea una bola de electricidad golpeando con ella al oponente"));
-		moves.push_back(new Ataque("Discharge","Electrico",100,6,"ataque que crea una bola de electricidad golpeando con ella al oponente"));
-		moves.push_back(new Ataque("Thunder Wave","Electrico",100,4,"ataque que crea una bola de electricidad golpeando con ella al oponente"));
-	}else if(typeid(pokemonElegido) == typeid(Water*)){
-		moves.push_back(new Ataque("Water pulse","Agua",99,5,"ataque que causa una onda acuatica que golpea al oponente"));
-		moves.push_back(new Ataque("Blizzard","Agua",70,7,"ataque que causa una onda acuatica que golpea al oponente"));
-		moves.push_back(new Ataque("Water gun","Agua",100,6,"ataque que causa una onda acuatica que golpea al oponente"));
-		moves.push_back(new Ataque("Bubble Beam","Agua",95,6,"ataque que causa una onda acuatica que golpea al oponente"));
 		moves.push_back(new Ataque("Counter","Lucha",100,4,"ataque que causa una onda acuatica que golpea al oponente"));
 		moves.push_back(new Ataque("Body Slam","Normal",100,8,"ataque que causa una onda acuatica que golpea al oponente"));
-	}
+		moves.push_back(new Ataque("Tackle","Normal",100,8,"ataque que causa donde un pokemon hace una carga contra el otro"));
 	return moves;
 }
 vector<Pokemon*> generar_pokemons(){
