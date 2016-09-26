@@ -16,7 +16,7 @@
 #include <stdlib.h>
 using namespace std;
 char** traspaso(Pokemon);
-void vida(Pokemon,Pokemon);
+
 void limpiar();
 void pokebola(int);
 void Combate(Pokemon,Pokemon);
@@ -196,19 +196,19 @@ void cuadrosDeBatalla(Pokemon jugador1,Pokemon jugador2){
 	getmaxyx (stdscr,y,x);
 	const int vida1 = jugador1.getVida();
 	const int vida2 = jugador2.getVida();
-	mvprintw(21,(y/2)-16,"%s                     %d/%d                     %s                     %d/%d",jugador1.getNombre(),jugador1.getVida(),vida1,jugador2.getNombre(),jugador2.getVida(),vida2);
-	mvprintw(22,(y/2)-16," ⛚________________________________⛚                      ⛚________________________________⛚");
-	mvprintw(23,(y/2)-16,"  |  __________	    __________  |                        |  __________	     __________  |");
-	mvprintw(24,(y/2)-16,"  | |          |     |          | |                        | |          |     |          | |");
-	mvprintw(25,(y/2)-16,"  | |%s|	   |%s| |                        | |%s|	    |%s| |",jugador1.getMoves().at(0)->getNombre(),jugador1.getMoves().at(1)->getNombre(),jugador2.getMoves().at(0)->getNombre(),jugador2.getMoves().at(1)->getNombre());
-	mvprintw(26,(y/2)-16,"  | |          |     |          | |                        | |          |     |          | |");
-	mvprintw(27,(y/2)-16,"  |  ‾‾‾‾‾‾‾‾‾‾       ‾‾‾‾‾‾‾‾‾‾  |                        |  ‾‾‾‾‾‾‾‾‾‾       ‾‾‾‾‾‾‾‾‾‾  |");
-	mvprintw(28,(y/2)-16,"  |  __________       __________  |                        |  __________       __________  |");
-	mvprintw(29,(y/2)-16,"  | |          |     |          | |                        | |          |     |          | |");
-	mvprintw(30,(y/2)-16,"  | |%s|	   |%s| |                        | |%s|	    |%s| |",jugador1.getMoves().at(2)->getNombre(),jugador1.getMoves().at(3)->getNombre(),jugador2.getMoves().at(2)->getNombre(),jugador2.getMoves().at(3)->getNombre());
-	mvprintw(31,(y/2)-16,"  | |          |     |          | |                        | |          |     |          | |");
-	mvprintw(32,(y/2)-16,"  |  ‾‾‾‾‾‾‾‾‾‾       ‾‾‾‾‾‾‾‾‾‾  |                        |  ‾‾‾‾‾‾‾‾‾‾       ‾‾‾‾‾‾‾‾‾‾  |");
-	mvprintw(33,(y/2)-16," ⛚‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾⛚                      ⛚‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾⛚");
+	mvprintw(21,(y/2)-16,"%s                          %d/%d                               %s                         %d/%d",jugador1.getNombre().c_str(),jugador1.getVida(),vida1,jugador2.getNombre().c_str(),jugador2.getVida(),vida2);
+	mvprintw(22,(y/2)-16,"  _________________________________                                        _________________________________");
+	mvprintw(23,(y/2)-16,"  |  __________	    __________  |                                        |  __________	     __________  |");
+	mvprintw(24,(y/2)-16,"  | |          |     |          | |                                        | |          |     |          | |");
+	mvprintw(25,(y/2)-16,"  | |%s|	 |%s| |                                        | |%s|	  |%s| |",jugador1.getMoves().at(0)->getNombre().c_str(),jugador1.getMoves().at(1)->getNombre().c_str(),jugador2.getMoves().at(0)->getNombre().c_str(),jugador2.getMoves().at(1)->getNombre().c_str());
+	mvprintw(26,(y/2)-16,"  | |__________|     |__________| |                                        | |__________|     |__________| |");
+	mvprintw(27,(y/2)-16,"  |                               |                                        |                               |");
+	mvprintw(28,(y/2)-16,"  |  __________       __________  |                                        |  __________       __________  |");
+	mvprintw(29,(y/2)-16,"  | |          |     |          | |                                        | |          |     |          | |");
+	mvprintw(30,(y/2)-16,"  | |%s|   |%s| |                                        | |%s|	  |%s| |",jugador1.getMoves().at(2)->getNombre().c_str(),jugador1.getMoves().at(3)->getNombre().c_str(),jugador2.getMoves().at(2)->getNombre().c_str(),jugador2.getMoves().at(3)->getNombre().c_str());
+	mvprintw(31,(y/2)-16,"  | |__________|     |__________| |                                        | |__________|     |__________| |");
+	mvprintw(32,(y/2)-16,"  |                               |                                        |                               |");
+	mvprintw(33,(y/2)-16,"  ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾                                        ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾");
 }
 
 int efectividad(string pokemon,string move){
@@ -227,82 +227,6 @@ int efectividad(string pokemon,string move){
 	}
 	attroff(COLOR_PAIR(8));
 }
-void vida(Pokemon player,Pokemon cpu){
-	int x,y;
-	getmaxyx(stdscr,x,y);
-	attron(COLOR_PAIR(10));
-	mvprintw(24,0,"                                                    ");
-	mvprintw(25,0,"                                                    ");
-	mvprintw(26,0,"                                                    ");
-	mvprintw(24,y-52,"                                                    ");
-	mvprintw(25,y-52,"                                                    ");
-	mvprintw(26,y-52,"                                                    ");
-	attroff(COLOR_PAIR(10));
-	attron(COLOR_PAIR(8));
-	int lado1,lado2;
-	if(player.getNombre()=="Charmeleon"){
-		lado1=player.getVida();
-		lado2=cpu.getVida();
-		if (cpu.getNombre()=="Frogadier")
-		{
-			attron(COLOR_PAIR(8));
-			mvprintw(23,0,"Player:Charmeleon-Vida:%d  ",player.getVida());
-			mvprintw(23,y-52,"Oponent:Frogadier-Vida:%d  ",cpu.getVida());
-			attroff(COLOR_PAIR(8));
-		}else{
-			
-			attron(COLOR_PAIR(8));
-			mvprintw(23,0,"Player:Charmeleon-Vida:%d  ",player.getVida());
-			mvprintw(23,y-52,"Oponent:Grovyle-Vida:%d  ",cpu.getVida());
-			attroff(COLOR_PAIR(8));
-		}
-	}else if(player.getNombre()=="Frogadier"){
-		lado2=player.getVida();
-		lado1=cpu.getVida();
-		if(cpu.getNombre()=="Charmeleon"){
-			
-			attron(COLOR_PAIR(8));
-			mvprintw(23,0,"Oponent:Charmeleon-Vida:%d  ",cpu.getVida());
-			mvprintw(23,y-52,"Player:Frogadier-Vida:%d  ",player.getVida());
-			attroff(COLOR_PAIR(8));
-		}else{
-			
-			attron(COLOR_PAIR(8));
-			mvprintw(23,0,"Oponent:Grovyle-Vida:%d  ",cpu.getVida());
-			mvprintw(23,y-52,"Player:Frogadier-Vida:%d  ",player.getVida());
-			attroff(COLOR_PAIR(8));
-		}
-	}else{
-		if(cpu.getNombre()=="Charmeleon"){
-			lado1=cpu.getVida();
-			lado2=player.getVida();
-			
-			attron(COLOR_PAIR(8));
-			mvprintw(23,0,"Oponent:Charmeleon-Vida:%d  ",cpu.getVida());
-			mvprintw(23,y-52,"Player:Grovyle-Vida:%d  ",player.getVida());
-			attroff(COLOR_PAIR(8));
-		}else{
-			lado1=player.getVida();
-			lado2=cpu.getVida();
-			
-			attron(COLOR_PAIR(8));
-			mvprintw(23,y-52,"Oponent:Frogadier-Vida:%d  ",cpu.getVida());
-			mvprintw(23,0,"Player:Grovyle-Vida:%d  ",player.getVida());
-			attroff(COLOR_PAIR(8));
-		}
-	}
-	attroff(COLOR_PAIR(8));
-	attron(COLOR_PAIR(9));
-	for (int i = 1; i <=lado1 ; ++i)
-	{
-		mvprintw(25,i," ");
-	}
-	for (int i = y-lado2-1; i < y-1; ++i)
-	{
-		mvprintw(25,i," ");
-	}
-	attroff(COLOR_PAIR(9));
-}
 void Combate(Pokemon player,Pokemon cpu){
 	int avanzar;
 	int control=0;
@@ -317,7 +241,7 @@ void Combate(Pokemon player,Pokemon cpu){
 		mvprintw(0,(y/2)-20,"(presione cualquier tecla para continuar)");
 		mvprintw(1,(y/2)-10,"!INICIO EN EL COMBATE!");
 		attroff(COLOR_PAIR(8));
-		vida(player,cpu);
+		
 		bool tiene1=false,tiene2=false;
 		int revision=0,revision2=0;
 		int elegido,elegido2;
@@ -333,11 +257,6 @@ void Combate(Pokemon player,Pokemon cpu){
 			while(revision==0){
 				cuadrosDeBatalla(player,cpu);
 				mvprintw(20,(y/2)-30,"ingrese el numero del ataque que va ha usar contra el oponente");
-				for (int i = 0; i < player.getMoves().size(); ++i)
-				{
-					mvprintw(22,(y/2)-30+15*i,"%d-%s",i,player.getMoves()[i]->getNombre().c_str());
-					mvprintw(23,(y/2)-30+15*i,"usos:%d",player.getMoves()[i]->getUsos());		
-				}
 				elegido=getch();
 				if((elegido-48)<player.getMoves().size()&&(elegido-48)>=0){
 					if(player.getMoves()[elegido-48]->getUsos()>0){
@@ -391,7 +310,7 @@ void Combate(Pokemon player,Pokemon cpu){
 			}else{
 				mvprintw(20,(y/2)-30,"Pero fallo                                                           ");
 			}
-			vida(player,cpu);
+			
 			avanzar=getch();
 			mvprintw(20,(y/2)-30,"%s ha usado %s                                                      ",cpu.getNombre().c_str(),cpu.getMoves()[elegido2]->getNombre().c_str());
 			avanzar=getch();
@@ -402,7 +321,7 @@ void Combate(Pokemon player,Pokemon cpu){
 			}else{
 				mvprintw(20,(y/2)-30,"Pero fallo                                                           ");
 			}
-			vida(player,cpu);
+			
 			avanzar=getch();
 		}else{
 			mvprintw(20,(y/2)-30,"%s ha usado %s                                                      ",cpu.getNombre().c_str(),cpu.getMoves()[elegido2]->getNombre().c_str());
@@ -414,7 +333,7 @@ void Combate(Pokemon player,Pokemon cpu){
 			}else{
 				mvprintw(20,(y/2)-30,"Pero fallo                                                           ");
 			}
-			vida(player,cpu);
+			
 			avanzar=getch();
 			mvprintw(20,(y/2)-30,"%s ha usado %s                                                      ",player.getNombre().c_str(),player.getMoves()[elegido]->getNombre().c_str());
 			avanzar=getch();
@@ -425,7 +344,7 @@ void Combate(Pokemon player,Pokemon cpu){
 			}else{
 				mvprintw(20,(y/2)-30,"Pero fallo                                                           ");
 			}
-			vida(player,cpu);
+			
 			avanzar=getch();
 		}
 		if (player.getVida()>0&&cpu.getVida()<=0)
